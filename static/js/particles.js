@@ -512,6 +512,7 @@
       let rect = null;
       let raf = null;
       let last = null;
+      let inside = false;       // 鼠标是否在卡片内（防 mouseover 重复触发）
 
       function apply() {
         raf = null;
@@ -526,27 +527,37 @@
         card.style.setProperty("--rhine-tilt-x", (-py * MAX_TILT * 2).toFixed(2) + "deg");
       }
 
-      card.addEventListener("mouseenter", () => {
+      /* 用 mouseover / mouseout 而不是 mouseenter / mouseleave。
+       *
+       * blowfish 的卡片里有一个带 ::before { absolute; inset: 0 } 的 <a>，
+       * 整个卡片面积都被它当作链接区域。mouseenter / mouseleave 不冒泡，
+       * 所以挂在 <article> 上的监听器永远收不到事件 —— 这是用户看到
+       * 「浮起来就不复原」的根因：mouseenter 没触发，所以 mouseleave
+       * 也无所谓触发了。
+       *
+       * mouseover / mouseout 会冒泡。mouseout 的 relatedTarget 是
+       * 鼠标「即将去往的元素」，用 card.contains(relatedTarget) 判断
+       * 就能区分「真的离开了」vs「只是在卡片子树之间移动」。 */
+      card.addEventListener("mouseover", () => {
+        if (inside) return;
+        inside = true;
         rect = card.getBoundingClientRect();
         card.style.setProperty("--rhine-tilt-lift", LIFT + "px");
         card.classList.add("is-tilting");
       });
 
       card.addEventListener("mousemove", (e) => {
+        if (!inside) return;
         last = { x: e.clientX, y: e.clientY };
         if (!raf) raf = requestAnimationFrame(apply); // 每帧最多算一次
       });
 
-      card.addEventListener("mouseleave", (e) => {
-        // 卡片倾斜后边缘会位移，光标贴着边走时会反复触发 enter/leave
-        // 造成抖动。用缓存的原始 rect（外扩 24px）复核一次，确认真的离开了。
-        const PAD = 24;
-        const near =
-          rect &&
-          e.clientX >= rect.left - PAD && e.clientX <= rect.right + PAD &&
-          e.clientY >= rect.top - PAD && e.clientY <= rect.bottom + PAD;
-        if (near) return;
+      card.addEventListener("mouseout", (e) => {
+        // 鼠标去往的元素还在卡片内 → 只是子树间移动，不是真离开
+        if (e.relatedTarget && card.contains(e.relatedTarget)) return;
 
+        if (!inside) return;
+        inside = false;
         if (raf) cancelAnimationFrame(raf);
         raf = null;
         rect = null;
