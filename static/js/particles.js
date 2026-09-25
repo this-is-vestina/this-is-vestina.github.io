@@ -98,7 +98,6 @@
     const CYAN_RATIO = 0.3;
 
     const TAU = Math.PI * 2;
-    const SPAWN_MS = 46;     // 移动中每 ~46ms 生一颗（≈22/秒）—— 观感「稀疏」的关键
     const IDLE_GAP = 900;    // 静止时多久补一次
     const IDLE_COUNT = 5;
     // 光环中心的跟随阻尼。拖尾现在交给每颗粒子自己的 follow，
@@ -127,27 +126,87 @@
       { passive: true }
     );
 
-    function spawn() {
-      pool.push({
-        // 锚点：以自己的速度追光环中心。跟随弱 → 被甩在后面形成拖尾，
-        // 跟随强 → 紧贴光标组成光环。静止时所有锚点都会收敛回中心。
-        cx: hx, cy: hy,
-        // 跟随强度：慢 3 / 快 31，跨度大才有「一簇散开成尾」的层次
-        follow: 3 + Math.random() * 28,
+    /* === 两种动效配置 ===
+     *
+     *   HALO：当前效果 —— 锚点 + 极坐标轨道，静止时围着光标，
+     *         移动时各自被甩在身后形成拖尾
+     *   BURST：v1 效果 —— 从光标全向喷射，匀速飞散后逐渐消失，
+     *          移动时是一条像喷漆一样的彩色路径
+     *
+     * 共用同一份代码、同一张 canvas、同一份离屏层，
+     * 切换时仅替换 spawn / update / dia 三个方法。
+     */
+    const HALO = {
+      spawnInterval: 46,                                 // ≈22 颗/秒
+      spawn() {
+        pool.push({
+          cx: hx, cy: hy,
+          follow: 3 + Math.random() * 28,
+          r: (3 + Math.random() * 9) * DPR,
+          theta: Math.random() * TAU,
+          dr: (13 + Math.random() * 24) * DPR,
+          dtheta: (Math.random() < 0.5 ? -1 : 1) * (0.5 + Math.random() * 1.3),
+          x: hx, y: hy,
+          life: 0,
+          max: 1.1 + Math.random() * 1.3,
+          size: (0.8 + Math.random() * 1.4) * DPR,
+          spr: SPR_BRIGHT[Math.random() < CYAN_RATIO ? 1 : 0],
+        });
+      },
+      update(p, dt) {
+        // ① 锚点追光环中心 —— 唯一的滞后来源
+        const ka = 1 - Math.exp(-p.follow * dt);
+        p.cx += (hx - p.cx) * ka;
+        p.cy += (hy - p.cy) * ka;
+        // ② 轨道偏移刚性演化 —— 不受 follow 影响，光环形状保持
+        p.r += p.dr * dt;
+        p.dr *= Math.pow(0.72, dt);
+        p.theta += p.dtheta * dt;
+        p.dtheta *= Math.pow(0.6, dt);
+        p.x = p.cx + Math.cos(p.theta) * p.r;
+        p.y = p.cy + Math.sin(p.theta) * p.r;
+      },
+      dia(p, u) { return p.size * 7.5 * (0.5 + 0.8 * Math.min(u / 0.3, 1)); },
+    };
 
-        // 轨道偏移：相对锚点的极坐标，刚性演化，不受 follow 影响
-        r: (3 + Math.random() * 9) * DPR,
-        theta: Math.random() * TAU,
-        dr: (13 + Math.random() * 24) * DPR,      // 向外漂移 → 「慢慢飞出来」
-        dtheta: (Math.random() < 0.5 ? -1 : 1) * (0.5 + Math.random() * 1.3),
+    const BURST = {
+      spawnInterval: 35,                                 // ≈28 颗/秒
+      spawn() {
+        const a = Math.random() * TAU;
+        const sp = (38 + Math.random() * 65) * DPR;      // v1 的「距离/时长」折算成速度
+        pool.push({
+          // v1：粒子在世界坐标系里飞，不锚定在光标上
+          x: hx, y: hy,
+          vx: Math.cos(a) * sp,
+          vy: Math.sin(a) * sp,
+          life: 0,
+          max: 1.4 + Math.random() * 1.0,                 // 1.4 ~ 2.4s
+          size: (1.0 + Math.random() * 1.8) * DPR,
+          phase: Math.random() * TAU,
+          spr: SPR_BRIGHT[Math.random() < CYAN_RATIO ? 1 : 0],
+        });
+      },
+      update(p, dt) {
+        const k = Math.pow(0.6, dt);                     // 阻尼：1.5s 后速度约剩 1/3
+        p.vx *= k; p.vy *= k;
+        p.vx += Math.sin(p.life * 1.7 + p.phase) * 14 * DPR * dt;
+        p.vy += Math.cos(p.life * 1.3 + p.phase * 1.7) * 12 * DPR * dt;
+        p.vy -= 18 * DPR * dt;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+      },
+      dia(p, u) {
+        // v1 标志性的「先涨后缩」：1.3 → 0.7
+        return p.size * 8 * (1.3 - 0.6 * u);
+      },
+    };
 
-        x: hx, y: hy,
-        life: 0,
-        max: 1.1 + Math.random() * 1.3,
-        size: (0.8 + Math.random() * 1.4) * DPR,
-        spr: SPR_BRIGHT[Math.random() < CYAN_RATIO ? 1 : 0],
-      });
-    }
+    /* 当前模式：初始从 localStorage 读，用户上次选的会保留 */
+    let cfg = HALO;
+    try {
+      const m = localStorage.getItem("rhine-fx-mode");
+      if (m === "burst" || m === "halo") cfg = (m === "burst") ? BURST : HALO;
+    } catch (e) {}
 
     const damp = (a, b, lambda, dt) => b + (a - b) * Math.exp(-lambda * dt);
 
@@ -163,11 +222,11 @@
 
         const moving = now - lastMove <= 140;
         if (moving && now >= nextSpawn) {
-          nextSpawn = now + SPAWN_MS;
-          spawn();
+          nextSpawn = now + cfg.spawnInterval;
+          cfg.spawn();
         } else if (!moving && now >= nextIdle) {
           nextIdle = now + IDLE_GAP;
-          for (let i = 0; i < IDLE_COUNT; i++) spawn();
+          for (let i = 0; i < IDLE_COUNT; i++) cfg.spawn();
         }
       }
 
@@ -181,19 +240,7 @@
           continue;
         }
 
-        // ① 锚点追光环中心 —— 唯一的滞后来源
-        const ka = 1 - Math.exp(-p.follow * dt);   // 指数趋近，恒稳定不过冲
-        p.cx += (hx - p.cx) * ka;
-        p.cy += (hy - p.cy) * ka;
-
-        // ② 轨道偏移刚性演化 —— 不受 follow 影响，光环形状得以保持
-        p.r += p.dr * dt;
-        p.dr *= Math.pow(0.72, dt);          // 外扩逐渐减速，最终停在一个半径上
-        p.theta += p.dtheta * dt;
-        p.dtheta *= Math.pow(0.6, dt);       // 绕转也慢慢停
-
-        p.x = p.cx + Math.cos(p.theta) * p.r;
-        p.y = p.cy + Math.sin(p.theta) * p.r;
+        cfg.update(p, dt);
       }
 
       // >>> 清空主画布 <<<
@@ -216,7 +263,7 @@
         let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
         for (let i = 0; i < pool.length; i++) {
           const p = pool[i];
-          const d = diaOf(p, p.life / p.max);
+          const d = cfg.dia(p, p.life / p.max);
           if (p.x - d < x0) x0 = p.x - d;
           if (p.y - d < y0) y0 = p.y - d;
           if (p.x + d > x1) x1 = p.x + d;
@@ -234,7 +281,7 @@
           for (let i = 0; i < pool.length; i++) {
             const p = pool[i];
             const a = alphaOf(p.life / p.max);
-            const d = diaOf(p, p.life / p.max) * 1.03;
+            const d = cfg.dia(p, p.life / p.max) * 1.03;
             sctx.globalAlpha = a;                 // 层内画满，由合成时的 alpha 统一压
             sctx.drawImage(SPR_DARK, p.x - d / 2, p.y - d / 2, d, d);
           }
@@ -260,6 +307,33 @@
       ctx.globalCompositeOperation = "source-over";
       requestAnimationFrame(frame);
     }
+
+    /* === 切换按钮 === */
+    function setFxMode(mode) {
+      if ((mode === "burst") === (cfg === BURST)) return;
+      cfg = (mode === "burst") ? BURST : HALO;
+      pool.length = 0;
+      ctx.clearRect(0, 0, W, H);
+      nextSpawn = 0;
+      nextIdle = 0;
+      try { localStorage.setItem("rhine-fx-mode", mode); } catch (e) {}
+      const btn = document.getElementById("rhine-fx-toggle");
+      if (btn) {
+        btn.classList.toggle("is-burst", mode === "burst");
+        const label = btn.querySelector(".rhine-fx-label");
+        if (label) label.textContent = mode.toUpperCase();
+      }
+    }
+    const btn = document.getElementById("rhine-fx-toggle");
+    if (btn) {
+      btn.addEventListener("click", () => {
+        setFxMode(cfg === HALO ? "burst" : "halo");
+      });
+      btn.classList.toggle("is-burst", cfg === BURST);
+      const label = btn.querySelector(".rhine-fx-label");
+      if (label) label.textContent = (cfg === BURST) ? "BURST" : "HALO";
+    }
+
     requestAnimationFrame(frame);
   }
   safe("萤火虫", initFirefly);
