@@ -316,8 +316,9 @@
     function syncFxToggleUI(btn) {
       if (!btn) btn = document.getElementById("rhine-fx-toggle");
       if (!btn) return;
-      btn.classList.toggle("is-burst", cfg === BURST);
+      // 图标保持白色 —— 不再随模式变色，模式只靠 title 区分
       btn.title = (cfg === BURST) ? "鼠标动效：BURST  ·  点击切到 HALO" : "鼠标动效：HALO  ·  点击切到 BURST";
+      btn.setAttribute("aria-pressed", cfg === BURST ? "true" : "false");
     }
 
     function setFxMode(mode) {
@@ -334,6 +335,9 @@
     function mountFxToggle() {
       const ap = document.getElementById("appearance-switcher");
       if (!ap || ap.parentNode.querySelector("#rhine-fx-toggle")) return;
+
+      // 给容器加间距类 —— header 右侧图标原本挨得太紧
+      ap.parentNode.classList.add("rhine-header-icons");
 
       const btn = document.createElement("button");
       btn.id = "rhine-fx-toggle";

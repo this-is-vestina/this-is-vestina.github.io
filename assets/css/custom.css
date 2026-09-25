@@ -1271,17 +1271,19 @@ main:not(:has(.rhine-hero)) .rhine-col {
  * 37. 动效切换按钮（注入到 header，紧贴明暗切换按钮）
  *
  * 样式跟 appearance-switcher 完全一致 —— 同一个 .text-sm .bf-icon-color-hover
- * 容器、同样的图标尺寸，只是里面的 SVG 是个 spark，色彩随当前模式：
- *   HALO  → 橙色
- *   BURST → 青色
- * 没有自己的大容器，靠 header 那一行的对齐就够看了。
+ * 容器、同样的图标尺寸。图标保持白色，不再随模式变色，避免在
+ * header 里抢眼。模式靠 title 提示。
  * ============================================================= */
 .rhine-fx-icon {
   width: 1em;
   height: 1em;
-  color: var(--rhine-orange);
-  transition: color 0.2s ease;
+  /* inherit 自按钮的 currentColor —— header 里通常就是主题文字色 */
 }
-.rhine-fx-toggle.is-burst .rhine-fx-icon {
-  color: var(--rhine-cyan);
+
+/* header 右侧的图标按钮本身没有间隙，加一个 gap 让它们透气 */
+header .rhine-header-icons {
+  gap: 0.4rem;
+}
+header .rhine-header-icons button {
+  margin: 0 !important;
 }
