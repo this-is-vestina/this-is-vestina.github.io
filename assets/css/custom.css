@@ -1268,66 +1268,20 @@ main:not(:has(.rhine-hero)) .rhine-col {
 }
 
 /* =============================================================
- * 37. 动效切换按钮（左下角）
- * 切换 HALO / BURST 两种鼠标动效，状态用 localStorage 持久化
+ * 37. 动效切换按钮（注入到 header，紧贴明暗切换按钮）
+ *
+ * 样式跟 appearance-switcher 完全一致 —— 同一个 .text-sm .bf-icon-color-hover
+ * 容器、同样的图标尺寸，只是里面的 SVG 是个 spark，色彩随当前模式：
+ *   HALO  → 橙色
+ *   BURST → 青色
+ * 没有自己的大容器，靠 header 那一行的对齐就够看了。
  * ============================================================= */
-.rhine-fx-toggle {
-  position: absolute;
-  left: 2rem;
-  bottom: 5.5rem;     /* 避开底部居中的滚动指示器 */
-  z-index: 4;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.45rem 0.9rem;
-  font-family: var(--rhine-font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.88);
-  background: rgba(10, 20, 33, 0.55);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 999px;
-  cursor: pointer;
-  user-select: none;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+.rhine-fx-icon {
+  width: 1em;
+  height: 1em;
+  color: var(--rhine-orange);
+  transition: color 0.2s ease;
 }
-.rhine-fx-toggle:hover {
-  background: rgba(10, 20, 33, 0.78);
-  border-color: rgba(255, 255, 255, 0.35);
-  transform: translateY(-1px);
-}
-.rhine-fx-toggle:active {
-  transform: translateY(0);
-}
-
-/* 状态点：HALO 时橙色，BURST 时青色 */
-.rhine-fx-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--rhine-orange);
-  box-shadow: 0 0 8px var(--rhine-orange);
-  transition: background 0.2s ease, box-shadow 0.2s ease;
-}
-.rhine-fx-toggle.is-burst .rhine-fx-dot {
-  background: var(--rhine-cyan);
-  box-shadow: 0 0 8px var(--rhine-cyan);
-}
-
-/* 在首页 hero 之上时文字浅色（hero 是视频背景） */
-.rhine-hero .rhine-fx-toggle {
-  color: rgba(255, 255, 255, 0.92);
-}
-
-/* 移动端 */
-@media (max-width: 640px) {
-  .rhine-fx-toggle {
-    left: 1rem;
-    bottom: 4.5rem;
-    padding: 0.4rem 0.75rem;
-    font-size: 0.65rem;
-  }
+.rhine-fx-toggle.is-burst .rhine-fx-icon {
+  color: var(--rhine-cyan);
 }

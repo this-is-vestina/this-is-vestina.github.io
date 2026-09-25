@@ -308,7 +308,18 @@
       requestAnimationFrame(frame);
     }
 
-    /* === 切换按钮 === */
+    /* === 切换按钮 ===
+     * 注入到 header，紧贴明暗切换按钮。
+     * 外观沿用 theme switcher 的 .text-sm .bf-icon-color-hover，
+     * 里面是个 spark 图标，颜色跟当前模式：HALO=橙，BURST=青。
+     */
+    function syncFxToggleUI(btn) {
+      if (!btn) btn = document.getElementById("rhine-fx-toggle");
+      if (!btn) return;
+      btn.classList.toggle("is-burst", cfg === BURST);
+      btn.title = (cfg === BURST) ? "鼠标动效：BURST  ·  点击切到 HALO" : "鼠标动效：HALO  ·  点击切到 BURST";
+    }
+
     function setFxMode(mode) {
       if ((mode === "burst") === (cfg === BURST)) return;
       cfg = (mode === "burst") ? BURST : HALO;
@@ -317,22 +328,37 @@
       nextSpawn = 0;
       nextIdle = 0;
       try { localStorage.setItem("rhine-fx-mode", mode); } catch (e) {}
-      const btn = document.getElementById("rhine-fx-toggle");
-      if (btn) {
-        btn.classList.toggle("is-burst", mode === "burst");
-        const label = btn.querySelector(".rhine-fx-label");
-        if (label) label.textContent = mode.toUpperCase();
-      }
+      syncFxToggleUI();
     }
-    const btn = document.getElementById("rhine-fx-toggle");
-    if (btn) {
+
+    function mountFxToggle() {
+      const ap = document.getElementById("appearance-switcher");
+      if (!ap || ap.parentNode.querySelector("#rhine-fx-toggle")) return;
+
+      const btn = document.createElement("button");
+      btn.id = "rhine-fx-toggle";
+      btn.type = "button";
+      // 跟明暗切换按钮同款：text-sm bf-icon-color-hover
+      btn.className = "text-sm bf-icon-color-hover";
+      btn.innerHTML =
+        '<span class="flex items-center justify-center">' +
+          '<svg class="rhine-fx-icon" viewBox="0 0 24 24" fill="currentColor" ' +
+               'stroke="currentColor" stroke-width="1.6" stroke-linecap="round">' +
+            '<circle cx="12" cy="12" r="2.2"/>' +
+            '<path d="M12 4.5v2.5M12 17v2.5M4.5 12h2.5M17 12h2.5' +
+                  'M7.05 7.05l1.7 1.7M15.25 15.25l1.7 1.7' +
+                  'M7.05 16.95l1.7-1.7M15.25 8.75l1.7-1.7"/>' +
+          '</svg>' +
+        '</span>';
+
+      ap.parentNode.insertBefore(btn, ap.nextSibling);
+
       btn.addEventListener("click", () => {
         setFxMode(cfg === HALO ? "burst" : "halo");
       });
-      btn.classList.toggle("is-burst", cfg === BURST);
-      const label = btn.querySelector(".rhine-fx-label");
-      if (label) label.textContent = (cfg === BURST) ? "BURST" : "HALO";
+      syncFxToggleUI(btn);
     }
+    mountFxToggle();
 
     requestAnimationFrame(frame);
   }
