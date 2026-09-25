@@ -9,7 +9,7 @@ defaultContentLanguageInSubdir = false
 # 中文站点启用复数标题
 pluralizeListTitles = true
 
-title = "Rhine Lab — Personal Site"
+title = "vestina"
 
 # 构建选项
 enableRobotsTXT = true

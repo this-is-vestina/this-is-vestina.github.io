@@ -5,6 +5,15 @@ hugo.exe
 hugo.deploy.json
 .hugo_build.lock
 
+# 素材原文件（未压缩的原始视频等），不部署。
+# 注意用 .source/* 而不是 .source/ —— 忽略整个目录的话 Git 不会进入它，
+# 下面的 ! 否定规则就失效了，开发脚本会一起被忽略。
+.source/*
+# 但开发脚本和字体要保留（make-logo.py 生成 logo、check-particles.js 冒烟测试）
+!.source/make-logo.py
+!.source/check-particles.js
+!.source/SpaceGrotesk.ttf
+
 # Claude Code session
 .claude/
 

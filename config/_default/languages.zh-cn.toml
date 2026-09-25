@@ -4,7 +4,7 @@
 locale = "zh-cn"
 label = "简体中文"
 weight = 9
-title = "Rhine Lab"
+title = "vestina"
 
 [params]
   displayName = "简体中文"

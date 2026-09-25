@@ -1,0 +1,85 @@
+{{/*
+  「专栏」总览页 —— 卡片式目录
+  覆盖 blowfish 的 _default/terms.html，只作用于 /series/（tag / category 不受影响）。
+  每张卡片展示：专栏名、描述、篇数、日期跨度、以及专栏内全部文章的标题列表。
+*/}}
+{{ define "main" }}
+  {{ .Scratch.Set "scope" "terms" }}
+
+  <header class="mt-5">
+    {{ if .Params.showBreadcrumbs | default (site.Params.taxonomy.showBreadcrumbs | default false) }}
+      {{ partial "breadcrumbs.html" . }}
+    {{ end }}
+    <h1 class="mt-5 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .Title }}</h1>
+    <div class="mt-1 mb-2 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
+      {{ partial "article-meta/taxonomy.html" (dict "context" . "scope" "single") }}
+    </div>
+  </header>
+
+  {{ if .Content }}
+    <section class="flex flex-col max-w-full mt-0 prose dark:prose-invert">
+      <div class="min-w-0 min-h-0 max-w-prose">{{ .Content }}</div>
+    </section>
+  {{ end }}
+
+  {{ $terms := .Data.Terms.Alphabetical }}
+  {{ if $terms }}
+    <section class="rhine-cols">
+      {{ range $i, $t := $terms }}
+        {{ $termPage := $t.Page }}
+        {{/* 按 series_order 排序；没写 order 的排到最后 */}}
+        {{ $pages := $t.Pages.ByParam "series_order" }}
+        {{ $count := len $pages }}
+        <article class="rhine-col" style="--rhine-col-accent: {{ index (slice "#FF6B1A" "#1B6CFF" "#2D8F5F" "#8B5CF6" "#5BC0EB" "#E85A14") (mod $i 6) }};">
+
+          <div class="rhine-col-head">
+            <span class="rhine-col-index">COLUMN {{ printf "%02d" (add $i 1) }}</span>
+            <span class="rhine-col-count">{{ $count }} 篇</span>
+          </div>
+
+          <h2 class="rhine-col-title">
+            <a href="{{ $termPage.RelPermalink }}">{{ $termPage.Title }}</a>
+          </h2>
+
+          {{ with $termPage.Params.description }}
+            <p class="rhine-col-desc">{{ . }}</p>
+          {{ end }}
+
+          {{/* 专栏内文章清单 —— 直接可点，省去一次跳转 */}}
+          <ol class="rhine-col-list">
+            {{ range $pages }}
+              <li>
+                <a href="{{ .RelPermalink }}">
+                  <span class="rhine-col-num">{{ with .Params.series_order }}{{ printf "%02d" . }}{{ else }}--{{ end }}</span>
+                  <span class="rhine-col-link-title">{{ .Title }}</span>
+                </a>
+              </li>
+            {{ end }}
+          </ol>
+
+          <div class="rhine-col-foot">
+            {{ with $pages }}
+              {{ $first := (index . 0).Date }}
+              {{ $last := (index . (sub (len .) 1)).Date }}
+              <span class="rhine-col-dates">
+                {{ if eq $count 1 }}
+                  {{ $first.Format "2006.01.02" }}
+                {{ else }}
+                  {{ $first.Format "2006.01" }} — {{ $last.Format "2006.01" }}
+                {{ end }}
+              </span>
+            {{ end }}
+            <a class="rhine-col-more" href="{{ $termPage.RelPermalink }}">
+              进入专栏
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </a>
+          </div>
+        </article>
+      {{ end }}
+    </section>
+  {{ else }}
+    <p class="text-neutral-500 mt-6">还没有专栏。给文章 front matter 加上 <code>series = ['专栏名']</code> 即可。</p>
+  {{ end }}
+{{ end }}

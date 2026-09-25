@@ -81,8 +81,9 @@ code, pre, kbd, samp, .font-mono, .text-mono, .rhine-mono {
 
 /* === 4. 全局背景：米白 + 极浅几何纹 === */
 body {
-  background-color: var(--rhine-bg);
+  background-color: var(--rhine-bg) !important;
   position: relative;
+  overflow-x: hidden; /* 防止 hero 负 margin 制造横向滚动条 */
 }
 
 /* 顶部"POWERED BY"风格的水平线（极细） */
@@ -234,16 +235,103 @@ a:hover, .prose a:hover {
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--rhine-orange); }
 
-/* === 13. Header：浅色 + 橙色细线 === */
-#header {
-  background-color: rgba(245, 242, 236, 0.85) !important;
+/* === 13. Header ===
+ * 注意：blowfish 的 baseof.html 用的是 <header> 标签，没有 id。
+ * 之前写成 #header 选择器一直不生效 —— 这是导航文字仍是蓝色的根因。
+ */
+/* 让 header 在 hero 上方始终有一层米白毛玻璃底，保证深灰文字可读
+ * （blowfish 默认 #menu-blur 是 opacity-0，滚动后才淡入）
+ * 边框画在这层毛玻璃上，而不是 <header> 本身（它高度为 0） */
+#menu-blur {
+  opacity: 1 !important;
+  background-color: rgba(245, 242, 236, 0.82) !important;
+  backdrop-filter: blur(12px) saturate(1.1);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  box-shadow: none !important;
   border-bottom: 1px solid var(--rhine-line);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+}
+
+/* --- 首页 hero 上方：header 去掉米白底，文字转白 ---
+ * .rhine-over-hero 由 static/js/particles.js 在「首页 + 未滚过 hero」时挂到 <html>
+ */
+html.rhine-over-hero #menu-blur {
+  background-color: transparent !important;
+  border-bottom-color: transparent !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html.rhine-over-hero header a,
+html.rhine-over-hero header .main-menu a,
+html.rhine-over-hero header .main-menu span,
+html.rhine-over-hero header nav span {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+html.rhine-over-hero header .logo svg {
+  color: #ffffff;
+}
+html.rhine-over-hero header a:hover,
+html.rhine-over-hero header a:hover span,
+html.rhine-over-hero header .logo:hover svg {
+  color: var(--rhine-orange) !important;
+}
+
+/* --- 自动隐藏：默认淡出，鼠标划到顶部（trigger 90px）才浮现 ---
+ * 只在有精确指针的设备上生效；触屏保持常显，否则手机点不到导航。
+ * 显示/隐藏由 static/js/particles.js 切换 <html>.rhine-header-visible
+ */
+@media (hover: hover) and (pointer: fine) {
+  header .fixed {
+    transition: opacity 0.28s ease, transform 0.28s ease;
+  }
+  html:not(.rhine-header-visible) header .fixed {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none; /* 让出点击，不遮挡下方内容 */
+  }
+  /* 键盘焦点进入时兜底显示 */
+  html:not(.rhine-header-visible) header .fixed:focus-within {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+}
+
+/* Header 文字色 → 深灰色（替代 blowfish 默认的蓝色 primary 色） */
+header a,
+header .main-menu a,
+header .main-menu span,
+header nav span,
+header .text-base,
+header .text-sm {
+  color: var(--rhine-ink) !important;
+  text-decoration: none !important;
+}
+header a:hover,
+header .main-menu a:hover,
+header a:hover span {
+  color: var(--rhine-orange) !important;
+}
+
+/* 当前激活的菜单项 */
+header .main-menu a.active span,
+header .main-menu span.active {
+  color: var(--rhine-orange) !important;
+  font-weight: 600;
+}
+
+/* Logo（莫比乌斯环 + VESTINA） */
+header .logo svg {
+  height: 2rem;
+  width: auto;
+  color: var(--rhine-ink);
+  transition: color 0.2s ease;
+}
+header .logo:hover svg {
+  color: var(--rhine-orange);
 }
 
 /* === 14. Footer === */
-#footer {
+footer {
   border-top: 1px solid var(--rhine-line);
   background-color: var(--rhine-bg);
 }
@@ -310,13 +398,18 @@ h2, h3, h4 {
   width: 32px;
   height: 32px;
   vertical-align: middle;
+  color: var(--rhine-orange);
 }
 .rhine-mobius svg {
   width: 100%;
   height: 100%;
-  stroke: var(--rhine-orange);
   fill: none;
   stroke-width: 2;
+}
+
+/* hero brand 区域内的莫比乌斯环用白色 */
+.rhine-hero-brand .rhine-mobius {
+  color: var(--rhine-orange);
 }
 
 /* === 19. "POWERED BY RHINE LAB" 风格的页脚徽章 === */
@@ -372,13 +465,17 @@ h2, h3, h4 {
 
 .rhine-hero {
   position: relative;
-  width: 100%;
-  min-height: 100vh;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   isolation: isolate;
+  /* 突破 blowfish <body> 的 max-w-7xl + 水平 padding，铺满整个视口 */
+  width: 100vw;
+  left: 50%;
+  margin-left: -50vw;
+  height: 100vh;
+  height: 100dvh;
 }
 
 /* 视频层（如果用视频背景）*/
@@ -441,127 +538,45 @@ h2, h3, h4 {
   padding: 2rem;
   max-width: 90vw;
   pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
 }
 
-.rhine-hero-chrome {
-  font-family: var(--rhine-font-mono);
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.25em;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 1.5rem;
+/* === Hero 引言（标题下方，第二行，半透明白，无斜体，缩小 20%） === */
+.rhine-hero-quote {
+  font-family: var(--rhine-font-sans);
+  font-size: clamp(0.85rem, 1.6vw, 1.1rem);  /* 原 1.05rem/2vw/1.4rem × 0.8 */
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0.25rem 0 1rem;  /* 紧贴标题下方 */
+  letter-spacing: 0.02em;
+  max-width: 640px;
+  transition: opacity 0.6s ease;
+  min-height: 1.6em;
 }
 
 .rhine-hero-title {
   font-family: var(--rhine-font-sans);
-  font-size: clamp(3.5rem, 13vw, 11rem);
+  font-size: clamp(2.8rem, 10.4vw, 8.8rem);  /* 原 3.5rem/13vw/11rem × 0.8 */
   font-weight: 700;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.88);
+  color: #ffffff;
   text-shadow:
-    0 4px 30px rgba(0, 0, 0, 0.6),
-    0 0 80px rgba(255, 107, 26, 0.15);
-  margin: 0 0 1.5rem;
-  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.75) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+    0 2px 20px rgba(0, 0, 0, 0.5),
+    0 0 60px rgba(0, 0, 0, 0.3);
+  margin: 0 0 1rem;
   position: relative;
   display: inline-block;
 }
 
 /* === Glitch 文字效果（参考 daily.yybb.us）===
- * 用 ::before 和 ::after 制造颜色偏移 + clip-path 切割
+ * 用户要求去掉闪烁效果 → 整个块删除
  */
-.rhine-glitch {
-  position: relative;
-  display: inline-block;
-}
-
-.rhine-glitch::before,
-.rhine-glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: inherit;
-  -webkit-background-clip: text;
-  background-clip: text;
-  pointer-events: none;
-}
-
-.rhine-glitch::before {
-  color: var(--rhine-orange);
-  -webkit-text-fill-color: var(--rhine-orange);
-  animation: rhine-glitch-1 4s infinite steps(1);
-  opacity: 0.7;
-  z-index: -1;
-}
-
-.rhine-glitch::after {
-  color: var(--rhine-cyan);
-  -webkit-text-fill-color: var(--rhine-cyan);
-  animation: rhine-glitch-2 4s infinite steps(1);
-  opacity: 0.7;
-  z-index: -2;
-}
-
-@keyframes rhine-glitch-1 {
-  0%, 100%   { transform: translate(0, 0); }
-  20%        { transform: translate(-2px, 1px); }
-  40%        { transform: translate(-3px, -1px); }
-  60%        { transform: translate(2px, 1px); clip-path: polygon(0 8%, 100% 8%, 100% 35%, 0 35%); }
-  61%        { transform: translate(2px, 1px); clip-path: polygon(0 65%, 100% 65%, 100% 90%, 0 90%); }
-  62%        { transform: translate(2px, 1px); clip-path: polygon(0 8%, 100% 8%, 100% 35%, 0 35%); }
-  80%        { transform: translate(-2px, -1px); }
-}
-
-@keyframes rhine-glitch-2 {
-  0%, 100%   { transform: translate(0, 0); }
-  20%        { transform: translate(2px, -1px); }
-  40%        { transform: translate(3px, 1px); }
-  60%        { transform: translate(-2px, -1px); clip-path: polygon(0 45%, 100% 45%, 100% 65%, 0 65%); }
-  61%        { transform: translate(-2px, -1px); clip-path: polygon(0 15%, 100% 15%, 100% 30%, 0 30%); }
-  62%        { transform: translate(-2px, -1px); clip-path: polygon(0 45%, 100% 45%, 100% 65%, 0 65%); }
-  80%        { transform: translate(2px, 1px); }
-}
-
-.rhine-hero-subtitle {
-  font-family: var(--rhine-font-mono);
-  font-size: 0.95rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.rhine-hero-subtitle a {
-  color: rgba(255, 255, 255, 0.9);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(255, 107, 26, 0.5);
-  padding-bottom: 2px;
-  transition: color 0.2s ease, border-color 0.2s ease;
-}
-.rhine-hero-subtitle a:hover {
-  color: var(--rhine-orange);
-  border-color: var(--rhine-orange);
-}
-
-.rhine-hero-divider {
-  margin: 0 1.25rem;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.rhine-hero-footer {
-  margin-top: 4rem;
-  font-family: var(--rhine-font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
-}
 
 /* 底部滚动指示器 */
 .rhine-hero-scroll {
@@ -584,46 +599,52 @@ h2, h3, h4 {
 
 /* 移动端 */
 @media (max-width: 768px) {
-  .rhine-hero-title { font-size: 4rem; }
-  .rhine-hero-subtitle { font-size: 0.8rem; }
-  .rhine-hero-divider { margin: 0 0.75rem; }
+  .rhine-hero-title { font-size: clamp(2.4rem, 12vw, 5rem); }
+  .rhine-hero-quote { font-size: 0.85rem; max-width: 88vw; }
+  .rhine-hero-nav { gap: 0.6rem; }
 }
 
 /* =============================================================
- * 25. 自定义鼠标荧光团（光标跟随圆环）
- * 配合 static/js/particles.js 使用，target #rhine-cursor-glow
+ * 26. 光标圆环 + 荧光团（跟随鼠标）
+ * DOM 由 static/js/particles.js 的 initCursorGlow() 创建。
+ * 不用 mix-blend-mode：在米白背景上会整个消失。
  * ============================================================= */
 #rhine-cursor-glow {
   position: fixed;
   top: 0;
   left: 0;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   pointer-events: none;
   z-index: 9998;
   transform: translate(-50%, -50%);
-  mix-blend-mode: screen;
   background: radial-gradient(circle,
-    rgba(255, 107, 26, 0.5) 0%,
-    rgba(255, 107, 26, 0.2) 30%,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.15) 40%,
     transparent 70%);
   transition: width 0.2s ease, height 0.2s ease;
   opacity: 0;
+}
+#rhine-cursor-glow.is-press {
+  width: 66px;
+  height: 66px;
 }
 
 #rhine-cursor-ring {
   position: fixed;
   top: 0;
   left: 0;
-  width: 24px;
-  height: 24px;
-  border: 1px solid rgba(91, 192, 235, 0.6);
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid #ffffff;
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
-  transition: width 0.15s ease, height 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.55);
+  transition: width 0.15s ease, height 0.15s ease,
+              border-color 0.15s ease, box-shadow 0.15s ease;
   opacity: 0;
 }
 
@@ -632,16 +653,616 @@ h2, h3, h4 {
   opacity: 1;
 }
 
-a:hover ~ #rhine-cursor-ring,
-.rhine-hero-content a:hover ~ #rhine-cursor-ring,
+/* 悬停在可交互元素上：圆环放大 + 转橙 */
 #rhine-cursor-ring.is-hover {
-  width: 40px;
-  height: 40px;
+  width: 46px;
+  height: 46px;
   border-color: var(--rhine-orange);
+  border-width: 2px;
+  box-shadow: 0 0 16px rgba(255, 107, 26, 0.7);
 }
 
-/* 在触摸设备上隐藏 */
+/* 触摸设备上完全隐藏（JS 里也不会创建） */
 @media (hover: none) {
   #rhine-cursor-glow,
-  #rhine-cursor-ring { display: none; }
+  #rhine-cursor-ring {
+    display: none;
+  }
+}
+
+/* =============================================================
+ * 27. Hero 顶部 brand 区（已移除 — header logo 接管）
+ * ============================================================= */
+
+/* =============================================================
+ * 27. Hero 引言（标题下方，第二行，半透明白，无斜体，缩小 20%）
+ * 由 #rhine-hero-quote 元素渲染，JS 循环替换文本
+ * ============================================================= */
+
+/* =============================================================
+ * 28. Hero 快捷导航图标（5 个彩色 hover 按钮）
+ * ============================================================= */
+.rhine-hero-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.rhine-hero-nav-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.rhine-hero-nav-item svg {
+  width: 18px;
+  height: 18px;
+}
+
+.rhine-hero-nav-item:hover {
+  background: rgba(255, 255, 255, 0.95);
+  transform: translateY(-3px);
+  color: white;
+  text-decoration: none;
+}
+
+.rhine-hero-nav-blue:hover   { background: #1B6CFF; border-color: #1B6CFF; }
+.rhine-hero-nav-green:hover  { background: #2D8F5F; border-color: #2D8F5F; }
+.rhine-hero-nav-orange:hover { background: var(--rhine-orange); border-color: var(--rhine-orange); }
+.rhine-hero-nav-cyan:hover   { background: var(--rhine-cyan); border-color: var(--rhine-cyan); }
+.rhine-hero-nav-purple:hover { background: #8B5CF6; border-color: #8B5CF6; }
+
+@media (max-width: 768px) {
+  .rhine-hero-nav-item { width: 38px; height: 38px; }
+  .rhine-hero-nav-item svg { width: 16px; height: 16px; }
+}
+
+/* =============================================================
+ * 29. Hero 下方内容区（米白背景 + 白色卡片容器）
+ * 借鉴 daily.yybb.us：滚下去是带卡片的内容区
+ * body 仍是米白，.rhine-below-container 是白色卡片
+ * ============================================================= */
+.rhine-below {
+  position: relative;
+  width: 100%;
+  padding: 5rem 1.5rem 4rem;
+  background-color: var(--rhine-bg);
+}
+
+.rhine-below-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: var(--rhine-bg-elevated);
+  border: 1px solid var(--rhine-line);
+  border-radius: 8px;
+  padding: 3.5rem 3rem;
+  position: relative;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 8px 30px rgba(15, 30, 46, 0.04);
+}
+
+/* 切角装饰（左上 + 右下两个小斜切）*/
+.rhine-below-container::before {
+  content: "";
+  position: absolute;
+  top: -1px; left: -1px;
+  width: 32px; height: 32px;
+  background:
+    linear-gradient(135deg, transparent 0%, transparent 50%, var(--rhine-orange) 50%, var(--rhine-orange) calc(50% + 1px), transparent calc(50% + 1px));
+}
+.rhine-below-container::after {
+  content: "";
+  position: absolute;
+  bottom: -1px; right: -1px;
+  width: 32px; height: 32px;
+  background:
+    linear-gradient(315deg, transparent 0%, transparent 50%, var(--rhine-cyan) 50%, var(--rhine-cyan) calc(50% + 1px), transparent calc(50% + 1px));
+}
+
+.rhine-below-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px dashed var(--rhine-line);
+}
+
+.rhine-below-title {
+  font-family: var(--rhine-font-sans);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--rhine-ink);
+  margin: 0.25rem 0;
+}
+
+/* 文章卡片网格 */
+.rhine-below-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.rhine-below-card {
+  position: relative;
+  background: var(--rhine-bg-panel);
+  border: 1px solid var(--rhine-line);
+  border-radius: 4px;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+.rhine-below-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--rhine-orange);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.25s ease;
+}
+.rhine-below-card:hover {
+  border-color: var(--rhine-line-strong);
+  /* 抬升交给 3D 倾斜的 --rhine-tilt-lift，这里不再设 transform
+     —— 否则 :hover 特异性更高会把倾斜整个盖掉 */
+  box-shadow: 0 6px 20px rgba(15, 30, 46, 0.06);
+}
+.rhine-below-card:hover::before {
+  transform: scaleY(1);
+}
+
+.rhine-below-card-link {
+  display: block;
+  padding: 1.5rem 1.5rem 1.25rem;
+  color: var(--rhine-ink);
+  text-decoration: none;
+}
+
+.rhine-below-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--rhine-font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--rhine-ink-muted);
+  margin-bottom: 0.75rem;
+}
+
+.rhine-below-card-cat {
+  padding: 2px 8px;
+  background: var(--rhine-ink);
+  color: white;
+  font-size: 0.65rem;
+}
+
+.rhine-below-card-title {
+  font-family: var(--rhine-font-sans);
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--rhine-ink);
+  margin: 0 0 0.6rem;
+  letter-spacing: -0.01em;
+}
+
+.rhine-below-card-summary {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--rhine-ink-soft);
+  margin: 0 0 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rhine-below-card-arrow {
+  display: flex;
+  justify-content: flex-end;
+  color: var(--rhine-ink-muted);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.rhine-below-card-arrow svg {
+  width: 18px;
+  height: 18px;
+}
+.rhine-below-card:hover .rhine-below-card-arrow {
+  color: var(--rhine-orange);
+  transform: translateX(4px);
+}
+
+.rhine-below-empty {
+  grid-column: 1 / -1;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--rhine-ink-muted);
+  border: 1px dashed var(--rhine-line);
+  border-radius: 4px;
+}
+.rhine-below-empty code {
+  background: var(--rhine-bg-panel);
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+
+.rhine-below-more {
+  margin-top: 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.rhine-below-more-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  font-family: var(--rhine-font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--rhine-ink);
+  background: var(--rhine-bg-panel);
+  border: 1px solid var(--rhine-line-strong);
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.rhine-below-more-link svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+.rhine-below-more-link:hover {
+  background: var(--rhine-ink);
+  color: white;
+  border-color: var(--rhine-ink);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+.rhine-below-more-link:hover svg {
+  transform: translateX(4px);
+}
+
+@media (max-width: 768px) {
+  .rhine-below { padding: 3rem 1rem 2.5rem; }
+  .rhine-below-container { padding: 2rem 1.25rem; }
+  .rhine-below-grid { grid-template-columns: 1fr; }
+}
+
+/* =============================================================
+ * 30. 主 wrapper 背景（hero 之外回归正常米白）
+ * （hero 全屏属性已合并到 section 24 的 .rhine-hero 里）
+ * ============================================================= */
+main {
+  background-color: var(--rhine-bg);
+}
+
+/* =============================================================
+ * 31. 萤火虫（canvas 粒子发射器）
+ *
+ * 光点全部画在一张全屏 canvas 上，不再创建 DOM 节点 —— 旧版每个光点
+ * 都是一个 div + 一条 CSS 动画，数量一多 DOM 和样式计算都是负担。
+ * 粒子的发射/运动逻辑在 static/js/particles.js 的 initFirefly()。
+ * ============================================================= */
+#rhine-firefly-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;  /* 绝对不能挡住点击 */
+  z-index: 9997;         /* 光标圆环 9999 / 荧光团 9998，要在它们下面 */
+}
+
+/* 触摸设备没有指针轨迹，JS 也不会创建 canvas；这里兜底 */
+@media (hover: none) {
+  #rhine-firefly-canvas {
+    display: none;
+  }
+}
+
+/* =============================================================
+ * 32. 专栏总览页 —— 卡片式目录（layouts/series/terms.html）
+ * ============================================================= */
+.rhine-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
+  margin: 2.5rem 0 3rem;
+}
+
+.rhine-col {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem 1.75rem 1.25rem;
+  background: var(--rhine-bg-elevated);
+  border: 1px solid var(--rhine-line);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+/* 左侧强调色条：hover 时从顶部展开 */
+.rhine-col::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--rhine-col-accent, var(--rhine-orange));
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.28s ease;
+}
+.rhine-col:hover {
+  border-color: var(--rhine-line-strong);
+  /* 同上：抬升由 3D 倾斜接管 */
+  box-shadow: 0 10px 28px rgba(15, 30, 46, 0.07);
+}
+.rhine-col:hover::before {
+  transform: scaleY(1);
+}
+
+/* 顶部：编号 + 篇数 */
+.rhine-col-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+  font-family: var(--rhine-font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+.rhine-col-index {
+  color: var(--rhine-col-accent, var(--rhine-orange));
+  font-weight: 500;
+}
+.rhine-col-count {
+  color: var(--rhine-ink-muted);
+  padding: 2px 8px;
+  border: 1px solid var(--rhine-line);
+  border-radius: 3px;
+}
+
+/* 专栏标题 */
+.rhine-col-title {
+  font-family: var(--rhine-font-sans);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+}
+.rhine-col-title a {
+  color: var(--rhine-ink);
+  text-decoration: none;
+}
+.rhine-col-title a:hover {
+  color: var(--rhine-col-accent, var(--rhine-orange));
+}
+
+.rhine-col-desc {
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--rhine-ink-soft);
+  margin: 0 0 1.1rem;
+}
+
+/* 文章清单 */
+.rhine-col-list {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  flex: 1;
+  border-top: 1px dashed var(--rhine-line);
+}
+.rhine-col-list li {
+  margin: 0;
+  border-bottom: 1px dashed var(--rhine-line);
+}
+.rhine-col-list a {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 0.6rem 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--rhine-ink-soft);
+  text-decoration: none;
+  transition: color 0.15s ease, padding-left 0.2s ease;
+}
+.rhine-col-list a:hover {
+  color: var(--rhine-col-accent, var(--rhine-orange));
+  padding-left: 6px;
+}
+.rhine-col-num {
+  flex-shrink: 0;
+  font-family: var(--rhine-font-mono);
+  font-size: 0.7rem;
+  color: var(--rhine-ink-muted);
+  letter-spacing: 0.08em;
+}
+.rhine-col-list a:hover .rhine-col-num {
+  color: var(--rhine-col-accent, var(--rhine-orange));
+}
+.rhine-col-link-title {
+  /* 长标题最多两行，超出省略 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 底部：日期跨度 + 进入专栏 */
+.rhine-col-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rhine-line);
+}
+.rhine-col-dates {
+  font-family: var(--rhine-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--rhine-ink-muted);
+}
+.rhine-col-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--rhine-font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--rhine-ink);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+.rhine-col-more svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s ease;
+}
+.rhine-col-more:hover {
+  color: var(--rhine-col-accent, var(--rhine-orange));
+}
+.rhine-col-more:hover svg {
+  transform: translateX(4px);
+}
+
+@media (max-width: 640px) {
+  .rhine-cols { grid-template-columns: 1fr; gap: 1.1rem; }
+  .rhine-col { padding: 1.35rem 1.25rem 1rem; }
+}
+
+/* =============================================================
+ * 33. 非首页：正文区变成白色卡片（米白在两侧）
+ *
+ * 背景：blowfish 的 <body> 是 max-w-7xl 居中的米白，正文直接铺在上面，
+ * 和首页「中间白、两侧米白」的观感不一致。
+ *
+ * 用 main:not(:has(.rhine-hero)) 判定「非首页」—— 只有首页的 main 里有
+ * .rhine-hero。:has() 在 Chrome 105+ / Safari 15.4+ / Firefox 121+ 可用。
+ * ============================================================= */
+main:not(:has(.rhine-hero)) {
+  background-color: var(--rhine-bg-elevated);
+  border: 1px solid var(--rhine-line);
+  border-radius: 8px;
+  margin: 2rem 0 3rem;
+  padding: 3rem 3rem 0.5rem;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 8px 30px rgba(15, 30, 46, 0.04);
+}
+
+/* =============================================================
+ * 34. 放宽正文宽度
+ *
+ * blowfish 给正文套了 Tailwind 的 max-w-prose（65 个字符宽），
+ * 在宽屏上只占容器三分之一 —— 而系列横幅、卡片网格都在 max-w-prose
+ * 之外，所以宽度对不上，看起来「文字缩在中间」。
+ *
+ * 这里把 main 内的 max-w-prose 全部放开，让正文填满白色卡片。
+ * 选择器特异性 (0,2,2) > Tailwind 的 (0,1,0)，不需要 !important。
+ * ============================================================= */
+main:not(:has(.rhine-hero)) .max-w-prose {
+  max-width: 100%;
+}
+
+/* 小屏收紧卡片内边距，避免内容被挤得太窄 */
+@media (max-width: 768px) {
+  main:not(:has(.rhine-hero)) {
+    padding: 1.75rem 1.25rem 0.5rem;
+    margin: 1rem 0 2rem;
+    border-radius: 6px;
+  }
+}
+
+/* =============================================================
+ * 35. 白色卡片内的嵌套卡片 —— 避免「白叠白」
+ *
+ * main 现在是白卡片，而 blowfish 的博客卡片是 bg-white/85、
+ * 我的专栏卡片也是 --rhine-bg-elevated，叠上去只剩边框能看。
+ * 这里把嵌套卡片改成极浅的暖色底，形成层次。
+ * ============================================================= */
+main:not(:has(.rhine-hero)) .article-link--card {
+  background-color: var(--rhine-bg-panel) !important;
+  border-color: var(--rhine-line) !important;
+}
+main:not(:has(.rhine-hero)) .article-link--card:hover {
+  border-color: var(--rhine-line-strong) !important;
+}
+
+main:not(:has(.rhine-hero)) .rhine-col {
+  background-color: var(--rhine-bg-panel);
+}
+
+/* =============================================================
+ * 36. 博客卡片：3D 跟随鼠标倾斜
+ *
+ * 由 static/js/particles.js 的 initCardTilt() 写入 --rhine-tilt-x/y/lift，
+ * 这里只负责把变量翻译成 transform，保持 JS 与样式解耦。
+ * 变量默认值 0，所以没有 JS 时卡片完全不受影响。
+ * ============================================================= */
+.article-link--card,
+.rhine-col,
+.rhine-below-card {
+  transform: perspective(900px)
+             rotateX(var(--rhine-tilt-x, 0deg))
+             rotateY(var(--rhine-tilt-y, 0deg))
+             translateY(var(--rhine-tilt-lift, 0px));
+  transform-style: preserve-3d;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.35s ease,
+              border-color 0.2s ease;
+  will-change: transform;
+}
+
+/* 鼠标在卡片上时：跟手更快，阴影加深制造「浮起」感 */
+.article-link--card.is-tilting,
+.rhine-col.is-tilting,
+.rhine-below-card.is-tilting {
+  transition: transform 0.08s linear, box-shadow 0.3s ease;
+  box-shadow: 0 18px 40px -12px rgba(15, 30, 46, 0.22);
+  z-index: 2;
+}
+
+/* 减少动画偏好：完全关掉倾斜 */
+@media (prefers-reduced-motion: reduce) {
+  .article-link--card,
+  .rhine-col,
+  .rhine-below-card {
+    transform: none !important;
+  }
+}
+
+/* 触摸设备：没有 hover，倾斜无意义 */
+@media (hover: none) {
+  .article-link--card,
+  .rhine-col,
+  .rhine-below-card {
+    transform: none;
+  }
 }

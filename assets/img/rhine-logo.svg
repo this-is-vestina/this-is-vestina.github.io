@@ -1,6 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#FF6B1A" stroke-width="2">
-  <circle cx="22" cy="32" r="14" />
-  <circle cx="42" cy="32" r="14" />
-  <!-- 中心交叉点 -->
-  <circle cx="32" cy="32" r="2" fill="#FF6B1A" stroke="none" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 152.07 28" fill="none" role="img" aria-label="VESTINA">
+  <!-- Möbius ring -->
+  <g transform="translate(11.2, 14)" stroke="currentColor" stroke-width="2.4" fill="none">
+    <path d="M 0 -10 A 10 10 0 0 1 0 10" stroke-linecap="round"/>
+    <path d="M 0 -10 A 10 10 0 0 0 0 10" stroke-linecap="round" stroke-dasharray="4 3"/>
+  </g>
+  <!-- VESTINA (outlined to paths) -->
+  <g fill="currentColor">
+    <path transform="translate(32.4, 23)" d="M5.04 0 0.46 -18H3.96L7.77 -2.19H8.13L11.93 -18H15.43L10.85 0Z"/>
+    <path transform="translate(51.38, 23)" d="M1.7 0V-18H13.27V-14.91H5.09V-10.62H12.55V-7.53H5.09V-3.09H13.42V0Z"/>
+    <path transform="translate(68.71, 23)" d="M7.95 0.36Q5.86 0.36 4.27 -0.39Q2.67 -1.13 1.77 -2.52Q0.87 -3.91 0.87 -5.86V-6.58H4.22V-5.86Q4.22 -4.24 5.22 -3.43Q6.22 -2.62 7.95 -2.62Q9.69 -2.62 10.56 -3.32Q11.42 -4.01 11.42 -5.09Q11.42 -5.84 10.99 -6.3Q10.57 -6.76 9.76 -7.06Q8.95 -7.35 7.79 -7.61L7.2 -7.74Q5.35 -8.15 4.02 -8.78Q2.7 -9.41 1.99 -10.44Q1.29 -11.47 1.29 -13.11Q1.29 -14.76 2.07 -15.93Q2.85 -17.1 4.28 -17.73Q5.71 -18.36 7.64 -18.36Q9.57 -18.36 11.07 -17.7Q12.57 -17.05 13.44 -15.75Q14.3 -14.45 14.3 -12.5V-11.73H10.95V-12.5Q10.95 -13.53 10.56 -14.16Q10.16 -14.79 9.41 -15.08Q8.67 -15.38 7.64 -15.38Q6.09 -15.38 5.36 -14.8Q4.63 -14.22 4.63 -13.22Q4.63 -12.55 4.98 -12.09Q5.32 -11.62 6.02 -11.31Q6.71 -11.01 7.79 -10.77L8.38 -10.65Q10.31 -10.23 11.74 -9.59Q13.17 -8.95 13.96 -7.89Q14.76 -6.84 14.76 -5.19Q14.76 -3.55 13.92 -2.3Q13.09 -1.05 11.56 -0.35Q10.03 0.36 7.95 0.36Z"/>
+    <path transform="translate(87.38, 23)" d="M5.86 0V-14.91H0.62V-18H14.5V-14.91H9.26V0Z"/>
+    <path transform="translate(105.58, 23)" d="M1.7 0V-18H5.09V0Z"/>
+    <path transform="translate(115.46, 23)" d="M1.7 0V-18H8.15L11.73 -2.31H12.19V-18H15.53V0H9.08L5.5 -15.69H5.04V0Z"/>
+    <path transform="translate(135.77, 23)" d="M0.46 0 5.19 -18H11.11L15.84 0H12.34L11.37 -3.96H4.94L3.96 0ZM5.73 -7.1H10.57L8.38 -15.87H7.92Z"/>
+  </g>
 </svg>

@@ -1,65 +1,159 @@
 {{/*
-  Custom homepage — 全屏视频背景 + 居中半透明白字 + tsparticles 粒子
-  配置: [homepage].layout = "custom"
-  注意：作为 partial 被调用，不要用 {{ define "main" }} 包装
+  Custom homepage
+  - 全屏视频背景（占满 viewport，无顶部留白）
+  - header logo 自动展示（Möbius + VESTINA，点击回首页）
+  - 中央：标题 -vestina- + 下方循环引言 + 快捷导航图标
+  - 底部滚动指示
+  - 下方："最新文章"内容区（白色卡片）
 */}}
 
+{{/* 引言列表（计算机领域名人名言） —— JS 循环播放 */}}
+{{ $quotes := slice
+  "「Talk is cheap. Show me the code.」— Linus Torvalds"
+  "「Premature optimization is the root of all evil.」— Donald Knuth"
+  "「First, solve the problem. Then, write the code.」— John Johnson"
+  "「Make it work, make it right, make it fast.」— Kent Beck"
+  "「Programs must be written for people to read, and only incidentally for machines to execute.」— H. Abelson"
+  "「The best way to predict the future is to invent it.」— Alan Kay"
+  "「Simplicity is the ultimate sophistication.」— Leonardo da Vinci"
+  "「Any sufficiently advanced technology is indistinguishable from magic.」— Arthur C. Clarke"
+  "「There are only two hard things in computer science: cache invalidation, naming things, and off-by-one errors.」— Phil Karlton"
+  "「Good code is its own best documentation.」— Steve McConnell"
+  "「Weeks of programming can save you hours of planning.」"
+  "「Before software can be reusable, it first has to be usable.」— Ralph Johnson"
+  "「The function of good software is to make the complex appear to be simple.」— Grady Booch"
+  "「The best error message is the one that never shows up.」— Thomas Fuchs"
+  "「Truth can only be found in one place: the code.」— Robert C. Martin"
+  "「Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live.」— Rick Osborne"
+  "「It's not a bug, it's an undocumented feature.」"
+  "「Software is a great combination between artistry and engineering.」— Bill Gates"
+  "「Walking on water and developing software from a specification are easy if both are frozen.」— Edward V. Berard"
+  "「Measuring programming progress by lines of code is like measuring aircraft building progress by weight.」— Bill Gates"
+}}
+
+{{/* === Hero 全屏区 === */}}
 <section class="rhine-hero">
-  {{/* === 背景图：preview.gif 循环播放（方案 C）===
-       当前是宝石之国（Houseki no Kuni）动图。
-       替换方式：把任意 .mp4/.webm/.gif/.jpg 放到 static/img/，
-       然后改下面的 src 即可。
-       优先建议：.mp4 视频（H.264）最流畅；.gif 也能用但文件大。
-  */}}
-  <img src="/img/hero-preview.gif"
-       alt=""
-       class="rhine-hero-bg"
-       aria-hidden="true">
-  {{/* 视频/图片加载失败时的纯 CSS 渐变占位 */}}
+  {{/* 视频背景（autoplay + muted + loop + playsinline）
+       poster 用视频首帧 JPEG（186KB），比原来的 GIF（901KB）轻得多 */}}
+  <video class="rhine-hero-video"
+         autoplay
+         muted
+         loop
+         playsinline
+         preload="auto"
+         poster="/img/hero-poster.jpg">
+    <source src="/img/hero-bg.mp4" type="video/mp4">
+  </video>
+
+  {{/* 视频加载失败时的兜底（静态首帧 + 渐变） */}}
   <div class="rhine-hero-fallback"></div>
-  {{/* 半透明蒙版：保证文字可读 */}}
+
+  {{/* 半透明蒙版 */}}
   <div class="rhine-hero-overlay"></div>
 
-  {{/* === tsparticles 粒子层（鼠标交互） === */}}
+  {{/* tsparticles 粒子层 */}}
   <div id="tsparticles"></div>
 
   {{/* === 中央内容 === */}}
   <div class="rhine-hero-content">
-    <div class="rhine-hero-chrome">
-      <span class="rhine-dot rhine-dot-circle rhine-dot-live"></span>
-      RHINE LAB · ONLINE · SESSION 0xA4F2
-    </div>
-
-    {{/* === glitch 文字效果（参考 daily.yybb.us） === */}}
-    <h1 class="rhine-hero-title rhine-glitch" data-text="-vestina-">
+    {{/* 标题 -vestina-（主视觉） === */}}
+    <h1 class="rhine-hero-title" data-text="-vestina-">
       -vestina-
     </h1>
 
-    <div class="rhine-hero-subtitle">
-      <a href="https://github.com/this-is-vestina" target="_blank" rel="noopener noreferrer">GITHUB</a>
-      <span class="rhine-hero-divider">·</span>
-      <a href="mailto:qxwan0890@gmail.com">qxwan0890@gmail.com</a>
-    </div>
+    {{/* 引言（标题下方，半透明，15s 循环） === */}}
+    <p class="rhine-hero-quote" id="rhine-hero-quote"
+       data-quotes='{{ $quotes | jsonify }}'>
+      {{ index $quotes 0 }}
+    </p>
 
-    <div class="rhine-hero-footer">
-      SCROLL DOWN · OR USE THE NAV ABOVE
+    {{/* === 快捷导航图标（彩色 hover） === */}}
+    <div class="rhine-hero-nav">
+      <a href="/posts/" class="rhine-hero-nav-item rhine-hero-nav-blue" title="博客">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+        </svg>
+      </a>
+      <a href="/projects/" class="rhine-hero-nav-item rhine-hero-nav-green" title="作品">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/>
+        </svg>
+      </a>
+      <a href="/about/" class="rhine-hero-nav-item rhine-hero-nav-orange" title="关于">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="8" r="4"/><path d="M4 21v-2a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v2"/>
+        </svg>
+      </a>
+      <a href="/tags/" class="rhine-hero-nav-item rhine-hero-nav-cyan" title="标签">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+          <line x1="7" y1="7" x2="7.01" y2="7"/>
+        </svg>
+      </a>
+      <a href="/index.xml" class="rhine-hero-nav-item rhine-hero-nav-purple" title="RSS">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/>
+        </svg>
+      </a>
     </div>
   </div>
 
   {{/* 底部滚动指示器 */}}
   <div class="rhine-hero-scroll">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M7 13l5 5 5-5M7 7l5 5 5-5"/>
     </svg>
   </div>
 </section>
 
-{{/* === 最近文章（保留 blog 功能） === */}}
-{{ if .Site.Params.homepage.showRecent | default false }}
-  <section class="rhine-recent">
-    <div class="rhine-recent-header">
+{{/* === Hero 下方：内容区（白色卡片，置于米白背景上） === */}}
+<section class="rhine-below">
+  <div class="rhine-below-container">
+    {{/* section header */}}
+    <div class="rhine-below-header">
       <span class="rhine-chrome">RECENT TRANSMISSIONS</span>
+      <h2 class="rhine-below-title">最新文章 / Recent Posts</h2>
+      <span class="rhine-data">{{ now.Format "2006.01.02" }} · {{ len (where .Site.RegularPages "Section" "posts") }} ENTRIES</span>
     </div>
-    {{ partial "recent-articles/main.html" . }}
-  </section>
-{{ end }}
+
+    {{/* 文章卡片网格 */}}
+    <div class="rhine-below-grid">
+      {{ $pages := where .Site.RegularPages "Section" "posts" }}
+      {{ range first 6 $pages }}
+        <article class="rhine-below-card">
+          <a href="{{ .RelPermalink }}" class="rhine-below-card-link">
+            <div class="rhine-below-card-meta">
+              <time>{{ .Date.Format "2006.01.02" }}</time>
+              {{ with .Params.categories }}
+                <span class="rhine-below-card-cat">{{ index . 0 }}</span>
+              {{ end }}
+            </div>
+            <h3 class="rhine-below-card-title">{{ .Title }}</h3>
+            <p class="rhine-below-card-summary">{{ .Summary | plainify | truncate 120 }}</p>
+            <div class="rhine-below-card-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </div>
+          </a>
+        </article>
+      {{ else }}
+        <div class="rhine-below-empty">
+          <p>暂无文章 · 等待 <code>hugo new content posts/*.md</code></p>
+        </div>
+      {{ end }}
+    </div>
+
+    {{/* 全部文章链接 */}}
+    {{ if gt (len $pages) 0 }}
+      <div class="rhine-below-more">
+        <a href="/posts/" class="rhine-below-more-link">
+          VIEW ALL TRANSMISSIONS
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M13 6l6 6-6 6"/>
+          </svg>
+        </a>
+      </div>
+    {{ end }}
+  </div>
+</section>

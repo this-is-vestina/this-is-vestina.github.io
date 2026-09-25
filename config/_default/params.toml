@@ -8,8 +8,9 @@ colorScheme = "rhine"             # 自定义配色方案名（创建在 assets/
 defaultAppearance = "light"       # 莱茵生命默认浅色
 autoSwitchAppearance = true       # 允许用户切换深色
 
-# Logo — 莫比乌斯环（磁带盒未来主义）
+# Logo — 莫比乌斯环 + VESTINA（点击回首页）
 logo = "img/rhine-logo.svg"
+disableTextInHeader = true
 
 # === 功能开关 ===
 enableA11y = true

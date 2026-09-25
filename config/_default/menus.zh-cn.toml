@@ -8,6 +8,11 @@
   weight = 10
 
 [[main]]
+  name = "专栏"
+  pageRef = "series"
+  weight = 15
+
+[[main]]
   name = "作品"
   pageRef = "projects"
   weight = 20
