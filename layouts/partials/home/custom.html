@@ -5,16 +5,17 @@
 */}}
 
 <section class="rhine-hero">
-  {{/* === 视频背景 ===
-       视频文件路径: /videos/rhine-hero.mp4
-       把视频放到 static/videos/rhine-hero.mp4 即可访问
-       （占位时显示 CSS 渐变背景，不会黑屏）
+  {{/* === 背景图：preview.gif 循环播放（方案 C）===
+       当前是宝石之国（Houseki no Kuni）动图。
+       替换方式：把任意 .mp4/.webm/.gif/.jpg 放到 static/img/，
+       然后改下面的 src 即可。
+       优先建议：.mp4 视频（H.264）最流畅；.gif 也能用但文件大。
   */}}
-  <video autoplay loop muted playsinline preload="auto" class="rhine-hero-video"
-         poster="/img/hero-poster.jpg">
-    <source src="/videos/rhine-hero.mp4" type="video/mp4">
-  </video>
-  {{/* 视频加载失败时的纯 CSS 渐变占位 */}}
+  <img src="/img/hero-preview.gif"
+       alt=""
+       class="rhine-hero-bg"
+       aria-hidden="true">
+  {{/* 视频/图片加载失败时的纯 CSS 渐变占位 */}}
   <div class="rhine-hero-fallback"></div>
   {{/* 半透明蒙版：保证文字可读 */}}
   <div class="rhine-hero-overlay"></div>
@@ -29,7 +30,10 @@
       RHINE LAB · ONLINE · SESSION 0xA4F2
     </div>
 
-    <h1 class="rhine-hero-title">-vestina-</h1>
+    {{/* === glitch 文字效果（参考 daily.yybb.us） === */}}
+    <h1 class="rhine-hero-title rhine-glitch" data-text="-vestina-">
+      -vestina-
+    </h1>
 
     <div class="rhine-hero-subtitle">
       <a href="https://github.com/this-is-vestina" target="_blank" rel="noopener noreferrer">GITHUB</a>

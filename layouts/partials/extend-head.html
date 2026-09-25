@@ -1,5 +1,6 @@
 {{/*
   Inject to <head>. Called by blowfish with .Site context (no per-page info available).
   We let all pages load it; tsparticles does nothing unless #tsparticles exists in DOM.
+  CDN 路径：tsparticles-slim@2.12.0（@tsparticles/tsparticles-bundle@3 不存在）
 */}}
-<script defer src="https://cdn.jsdelivr.net/npm/@tsparticles/tsparticles-bundle@3/tsparticles.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2.12.0/tsparticles.slim.bundle.min.js"></script>

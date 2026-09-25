@@ -381,7 +381,7 @@ h2, h3, h4 {
   isolation: isolate;
 }
 
-/* 视频层 */
+/* 视频层（如果用视频背景）*/
 .rhine-hero-video {
   position: absolute;
   inset: 0;
@@ -389,6 +389,18 @@ h2, h3, h4 {
   height: 100%;
   object-fit: cover;
   z-index: 0;
+}
+
+/* 图片背景层（用 gif/jpg 时）*/
+.rhine-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  /* 强制 gif 循环 + 平滑 */
+  image-rendering: -webkit-optimize-contrast;
 }
 
 /* 视频加载失败时的 CSS 占位（深蓝黑渐变） */
@@ -455,6 +467,66 @@ h2, h3, h4 {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  position: relative;
+  display: inline-block;
+}
+
+/* === Glitch 文字效果（参考 daily.yybb.us）===
+ * 用 ::before 和 ::after 制造颜色偏移 + clip-path 切割
+ */
+.rhine-glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.rhine-glitch::before,
+.rhine-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: inherit;
+  -webkit-background-clip: text;
+  background-clip: text;
+  pointer-events: none;
+}
+
+.rhine-glitch::before {
+  color: var(--rhine-orange);
+  -webkit-text-fill-color: var(--rhine-orange);
+  animation: rhine-glitch-1 4s infinite steps(1);
+  opacity: 0.7;
+  z-index: -1;
+}
+
+.rhine-glitch::after {
+  color: var(--rhine-cyan);
+  -webkit-text-fill-color: var(--rhine-cyan);
+  animation: rhine-glitch-2 4s infinite steps(1);
+  opacity: 0.7;
+  z-index: -2;
+}
+
+@keyframes rhine-glitch-1 {
+  0%, 100%   { transform: translate(0, 0); }
+  20%        { transform: translate(-2px, 1px); }
+  40%        { transform: translate(-3px, -1px); }
+  60%        { transform: translate(2px, 1px); clip-path: polygon(0 8%, 100% 8%, 100% 35%, 0 35%); }
+  61%        { transform: translate(2px, 1px); clip-path: polygon(0 65%, 100% 65%, 100% 90%, 0 90%); }
+  62%        { transform: translate(2px, 1px); clip-path: polygon(0 8%, 100% 8%, 100% 35%, 0 35%); }
+  80%        { transform: translate(-2px, -1px); }
+}
+
+@keyframes rhine-glitch-2 {
+  0%, 100%   { transform: translate(0, 0); }
+  20%        { transform: translate(2px, -1px); }
+  40%        { transform: translate(3px, 1px); }
+  60%        { transform: translate(-2px, -1px); clip-path: polygon(0 45%, 100% 45%, 100% 65%, 0 65%); }
+  61%        { transform: translate(-2px, -1px); clip-path: polygon(0 15%, 100% 15%, 100% 30%, 0 30%); }
+  62%        { transform: translate(-2px, -1px); clip-path: polygon(0 45%, 100% 45%, 100% 65%, 0 65%); }
+  80%        { transform: translate(2px, 1px); }
 }
 
 .rhine-hero-subtitle {
@@ -515,4 +587,61 @@ h2, h3, h4 {
   .rhine-hero-title { font-size: 4rem; }
   .rhine-hero-subtitle { font-size: 0.8rem; }
   .rhine-hero-divider { margin: 0 0.75rem; }
+}
+
+/* =============================================================
+ * 25. 自定义鼠标荧光团（光标跟随圆环）
+ * 配合 static/js/particles.js 使用，target #rhine-cursor-glow
+ * ============================================================= */
+#rhine-cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+  background: radial-gradient(circle,
+    rgba(255, 107, 26, 0.5) 0%,
+    rgba(255, 107, 26, 0.2) 30%,
+    transparent 70%);
+  transition: width 0.2s ease, height 0.2s ease;
+  opacity: 0;
+}
+
+#rhine-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(91, 192, 235, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.15s ease, height 0.15s ease, border-color 0.15s ease;
+  opacity: 0;
+}
+
+#rhine-cursor-glow.is-active,
+#rhine-cursor-ring.is-active {
+  opacity: 1;
+}
+
+a:hover ~ #rhine-cursor-ring,
+.rhine-hero-content a:hover ~ #rhine-cursor-ring,
+#rhine-cursor-ring.is-hover {
+  width: 40px;
+  height: 40px;
+  border-color: var(--rhine-orange);
+}
+
+/* 在触摸设备上隐藏 */
+@media (hover: none) {
+  #rhine-cursor-glow,
+  #rhine-cursor-ring { display: none; }
 }
