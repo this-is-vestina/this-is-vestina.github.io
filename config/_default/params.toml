@@ -1,0 +1,127 @@
+# ============================================================
+# Blowfish 主题参数 — 莱茵生命风格
+# 文档: https://blowfish.page/docs/configuration/#theme-parameters
+# ============================================================
+
+# === 外观 ===
+colorScheme = "rhine"             # 自定义配色方案名（创建在 assets/css/schemes/rhine.css）
+defaultAppearance = "dark"        # 强制暗色
+autoSwitchAppearance = false      # 不自动切换
+
+# === 功能开关 ===
+enableA11y = true
+enableSearch = true
+enableCodeCopy = true
+enableStructuredBreadcrumbs = true
+
+# === 内容 ===
+mainSections = ["posts", "projects"]
+replyByEmail = false
+
+# === 图片 ===
+disableImageOptimization = false
+hotlinkFeatureImage = false
+
+# === Header ===
+[header]
+  layout = "fixed"               # 固定顶部 — 科技感更强
+  mobileMenuStyle = "fullscreen"
+
+# === Footer ===
+[footer]
+  showMenu = true
+  showCopyright = true
+  showThemeAttribution = true
+  showAppearanceSwitcher = false  # 强制暗色，隐藏切换器
+  showScrollToTop = true
+
+# === Homepage ===
+[homepage]
+  layout = "profile"             # 个人 profile 布局 — 适合作为综合站
+  showRecent = true
+  showRecentItems = 6
+  showMoreLink = true
+  showMoreLinkDest = "/posts/"
+  cardView = true                # 博客卡片视图
+  cardViewScreenWidth = false
+
+# === Article ===
+[article]
+  showDate = true
+  showDateUpdated = false
+  showAuthor = true
+  showAuthorsList = true
+  showReadingTime = true
+  showTaxonomies = true
+  showWordCount = false
+  showBreadcrumbs = true
+  showDraftLabel = true
+  showEdit = false
+  showShareButtons = false
+  showReaction = false
+  showCodeCopy = true
+  showPageInfo = true
+  showPagination = true
+  invertPagination = false
+  showRandomPost = false
+  autoNumberHeadings = false
+  headingHighlight = true
+  showSummary = true              # 列表页显示摘要
+  showCardView = false
+  cardViewScreenWidth = false
+  layoutBackgroundBlur = true
+  backgroundBlurWidth = "100px"
+  showRelatedContent = true
+  relatedContentLimit = 3
+
+# === List ===
+[list]
+  showBreadcrumbs = true
+  showSummary = true
+  showCardView = true
+  cardViewScreenWidth = false
+  groupByYear = false
+  orderByWeight = true
+  showTableOfContents = false
+  cardView = true
+
+# === Taxonomy ===
+[taxonomy]
+  showBreadcrumbs = true
+  showTermCount = true
+  showTermCardView = true
+
+# === Term ===
+[term]
+  showBreadcrumbs = true
+  showTermCount = true
+  groupByYear = false
+  orderByWeight = true
+
+# === SEO ===
+[seo]
+  metaDescriptionOrder = ["summary", "description", "site"]
+
+# === 杂项 ===
+fingerprintAlgorithm = "sha512"
+
+[languageRedirect]
+  enabled = false
+  storageKey = "blowfish_preferred_language"
+  browserRedirectHomeOnly = true
+  storedLanguageRedirect = true
+
+# === 关闭我们不需要的第三方集成 ===
+# Firebase（views/likes）
+[firebase]
+  apiKey = ""
+  authDomain = ""
+  projectId = ""
+  storageBucket = ""
+  messagingSenderId = ""
+  appId = ""
+  measurementId = ""
+
+# 评论
+[comments]
+  enabled = false

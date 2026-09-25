@@ -1,0 +1,78 @@
+# Hugo 站点主配置 - 莱茵生命风格个人站
+# 修改 baseURL 和 title 即可部署
+
+theme = "blowfish"
+baseURL = "https://your-username.github.io/"
+defaultContentLanguage = "zh-cn"
+defaultContentLanguageInSubdir = false
+
+# 中文站点启用复数标题
+pluralizeListTitles = true
+
+title = "Rhine Lab — Personal Site"
+
+# 构建选项
+enableRobotsTXT = true
+summaryLength = 0
+buildDrafts = false
+buildFuture = false
+enableEmoji = true
+
+[pagination]
+  pagerSize = 10
+
+[imaging]
+  anchor = 'Center'
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+  author = "authors"
+  series = "series"
+
+[sitemap]
+  changefreq = 'daily'
+  filename = 'sitemap.xml'
+  priority = 0.5
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[related]
+  threshold = 0
+  toLower = false
+
+  [[related.indices]]
+    name = "tags"
+    weight = 100
+
+  [[related.indices]]
+    name = "categories"
+    weight = 100
+
+  [[related.indices]]
+    name = "series"
+    weight = 50
+
+  [[related.indices]]
+    name = "authors"
+    weight = 20
+
+  [[related.indices]]
+    name = "date"
+    weight = 10
+
+  [[related.indices]]
+    applyFilter = false
+    name = 'fragmentrefs'
+    type = 'fragments'
+    weight = 10
+
+# 隐私/安全
+[privacy]
+  [privacy.vimeo]
+    disabled = false
+    simple = true
+  [privacy.youtube]
+    disabled = false
+    privacyEnhanced = true

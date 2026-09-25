@@ -1,0 +1,30 @@
+# 主导航菜单 — 显示在页面顶部
+# 字段: name, pageRef, url, weight, pre, parent
+# 文档: https://blowfish.page/docs/menus/
+
+[[main]]
+  name = "博客"
+  pageRef = "posts"
+  weight = 10
+
+[[main]]
+  name = "作品"
+  pageRef = "projects"
+  weight = 20
+
+[[main]]
+  name = "标签"
+  pageRef = "tags"
+  weight = 30
+
+[[main]]
+  name = "关于"
+  pageRef = "about"
+  weight = 40
+
+# 底部菜单（可选）
+# [[footer]]
+#   name = "RSS"
+#   url = "/index.xml"
+#   weight = 10
+#   pre = "rss"

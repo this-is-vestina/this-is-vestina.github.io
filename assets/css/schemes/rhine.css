@@ -1,0 +1,58 @@
+/* =============================================================
+ * Rhine Lab 配色方案 — 明日方舟莱茵生命风格
+ * 文档: https://blowfish.page/docs/advanced-customisation/#colour-schemes
+ *
+ * 颜色规范（参考 Arknights 莱茵生命运营/HUD 配色）：
+ *   主色:  #1B6CFF  莱茵生命蓝
+ *   次色:  #4DA8DA  数据青
+ *   高亮:  #5BC0EB  实时/活跃
+ *   警告:  #E89B3C  警示橙
+ *   危险:  #D14B4B  失败红
+ *
+ * 背景层级：
+ *   深底:  #0A1421  页面底
+ *   面板:  #142638  卡片
+ *   浮层:  #1B3050  hover
+ *
+ * 字段说明：每个变量是 RGB 三元组（逗号分隔），供 Tailwind 编译。
+ * 命名遵循 Blowfish 规范：{neutral|primary|secondary}-{50..900}
+ * 注意：palette 不支持 950 阶
+ * ============================================================= */
+
+:root {
+  /* === Neutral：冷灰/深蓝（背景/文本） === */
+  --color-neutral-50:  232, 241, 251;  /* #E8F1FB 主文本 */
+  --color-neutral-100: 200, 217, 233;  /* #C8D9E9 次文本 */
+  --color-neutral-200: 143, 168, 196;  /* #8FA8C4 muted  */
+  --color-neutral-300: 90, 115, 146;   /* #5A7392 faint   */
+  --color-neutral-400: 56, 75, 100;    /* #384B64         */
+  --color-neutral-500: 27, 48, 80;     /* #1B3050 elevated*/
+  --color-neutral-600: 20, 38, 56;     /* #142638 panel   */
+  --color-neutral-700: 14, 26, 43;     /* #0E1A2B deep 2  */
+  --color-neutral-800: 10, 20, 33;     /* #0A1421 deep 1  */
+  --color-neutral-900: 5, 11, 18;      /*  最深背景       */
+
+  /* === Primary：莱茵生命蓝（交互/链接/按钮） === */
+  --color-primary-50:  232, 241, 255;  /* #E8F1FF */
+  --color-primary-100: 191, 216, 255;  /* #BFD8FF */
+  --color-primary-200: 128, 176, 255;  /* #80B0FF */
+  --color-primary-300: 64, 144, 255;   /* #4090FF */
+  --color-primary-400: 27, 108, 255;   /* #1B6CFF ★ */
+  --color-primary-500: 14, 92, 232;    /* #0E5CE8 */
+  --color-primary-600: 10, 72, 192;    /* #0A48C0 */
+  --color-primary-700: 8, 54, 152;     /* #083698 */
+  --color-primary-800: 5, 36, 112;     /* #052470 */
+  --color-primary-900: 3, 22, 72;      /* #031648 */
+
+  /* === Secondary：数据青/cyan（标签/状态点/数据） === */
+  --color-secondary-50:  224, 244, 252;  /* #E0F4FC */
+  --color-secondary-100: 179, 226, 245;  /* #B3E2F5 */
+  --color-secondary-200: 128, 207, 232;  /* #80CFE8 */
+  --color-secondary-300: 91, 192, 235;   /* #5BC0EB ★ */
+  --color-secondary-400: 77, 168, 218;   /* #4DA8DA */
+  --color-secondary-500: 58, 141, 194;   /* #3A8DC2 */
+  --color-secondary-600: 42, 114, 168;   /* #2A72A8 */
+  --color-secondary-700: 32, 88, 138;    /* #20588A */
+  --color-secondary-800: 22, 62, 107;    /* #163E6B */
+  --color-secondary-900: 13, 36, 77;     /* #0D244D */
+}

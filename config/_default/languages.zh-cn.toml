@@ -1,0 +1,25 @@
+# 中文站点语言配置
+# 文档: https://blowfish.page/docs/multi-language/
+
+locale = "zh-cn"
+label = "简体中文"
+weight = 9
+title = "Rhine Lab"
+
+[params]
+  displayName = "简体中文"
+  isoCode = "zh-cn"
+  rtl = false
+  dateFormat = "2006-01-02"
+  description = "Personal Site · 科研 · 工程 · 写作"
+
+# 作者信息 — 在 profile 布局和文章署名处显示
+[params.author]
+  name = "Dr. Operator"
+  image = ""
+  headline = "Researcher · Engineer · Writer"
+  bio = "面向工程与写作的个人站点。记录研究笔记、工程实践与零散思考。"
+  links = [
+    { github = "https://github.com/your-username" },
+    { email = "mailto:you@example.com" },
+  ]

@@ -1,0 +1,25 @@
+# Hugo build output
+public/
+resources/_gen/
+hugo.exe
+hugo.deploy.json
+.hugo_build.lock
+
+# Claude Code session
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local dev
+*.log
+.env
+.env.local
