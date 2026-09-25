@@ -40,10 +40,10 @@ hotlinkFeatureImage = false
 
 # === Homepage ===
 [homepage]
-  layout = "profile"             # 个人 profile 布局 — 适合作为综合站
-  showRecent = true
+  layout = "custom"              # 全屏视频背景 + 居中半透明白字（layouts/partials/home/custom.html）
+  showRecent = false             # 关闭最近文章（hero 占满首屏）
   showRecentItems = 6
-  showMoreLink = true
+  showMoreLink = false
   showMoreLinkDest = "/posts/"
   cardView = true                # 博客卡片视图
   cardViewScreenWidth = false

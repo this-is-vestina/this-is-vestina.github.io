@@ -1,0 +1,5 @@
+{{/*
+  Inject before </body>. Called by blowfish with .Site context.
+  Always load; particles.js checks for #tsparticles before initializing.
+*/}}
+<script defer src="{{ "js/particles.js" | relURL }}"></script>

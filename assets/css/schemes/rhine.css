@@ -59,39 +59,39 @@
 }
 
 [data-theme="dark"] {
-  /* === Neutral（深色模式）：深蓝/灰黑背景 === */
-  --color-neutral-50:  8,   20,  32;   /* #081420 最深背景 */
-  --color-neutral-100: 15,  30,  46;   /* #0F1E2E */
-  --color-neutral-200: 20,  38,  56;   /* #142638 */
-  --color-neutral-300: 27,  48,  72;   /* #1B3048 */
-  --color-neutral-400: 50,  78,  110;  /* #324E6E */
-  --color-neutral-500: 90,  115, 146;  /* #5A7392 */
-  --color-neutral-600: 143, 168, 196;  /* #8FA8C4 */
-  --color-neutral-700: 200, 217, 233;  /* #C8D9E9 */
-  --color-neutral-800: 232, 241, 251;  /* #E8F1FB 主文字 */
-  --color-neutral-900: 245, 242, 236;  /* #F5F2EC 最亮文字 */
+  /* === Neutral（深色模式 · 赛博蓝）：深蓝黑底 === */
+  --color-neutral-50:  5,   11,  18;   /* #050B12 最深背景 */
+  --color-neutral-100: 10,  20,  33;   /* #0A1421 主背景 */
+  --color-neutral-200: 14,  26,  43;   /* #0E1A2B */
+  --color-neutral-300: 20,  38,  56;   /* #142638 面板 */
+  --color-neutral-400: 27,  48,  80;   /* #1B3050 浮层 */
+  --color-neutral-500: 56,  75,  100;  /* #384B64 */
+  --color-neutral-600: 90, 115, 146;   /* #5A7392 muted */
+  --color-neutral-700: 143, 168, 196;  /* #8FA8C4 */
+  --color-neutral-800: 200, 217, 233;  /* #C8D9E9 次文字 */
+  --color-neutral-900: 232, 241, 251;  /* #E8F1FB 主文字 */
 
-  /* === Primary：深色模式用更亮的橙（避免视觉疲劳） === */
+  /* === Primary：橙色（莱茵生命强调） === */
   --color-primary-50:  72,  27,    6;
   --color-primary-100: 112, 42,    9;
   --color-primary-200: 152, 57,   12;
   --color-primary-300: 192, 73,   16;
   --color-primary-400: 232, 90,   20;
-  --color-primary-500: 255, 107,  26;   /* ★ 亮橙 */
+  --color-primary-500: 255, 107,  26;   /* ★ 亮橙（深色模式） */
   --color-primary-600: 255, 130,  60;
   --color-primary-700: 255, 175, 110;
   --color-primary-800: 255, 220, 184;
   --color-primary-900: 255, 245, 232;
 
-  /* === Secondary：青色保持，但提亮 === */
-  --color-secondary-50:  4,   30,  54;
-  --color-secondary-100: 8,   52,  88;
-  --color-secondary-200: 14,  76,  120;
-  --color-secondary-300: 38, 128, 184;
-  --color-secondary-400: 91, 192, 235;   /* ★ 主青 */
-  --color-secondary-500: 130, 207, 235;
-  --color-secondary-600: 184, 228, 246;
-  --color-secondary-700: 230, 245, 252;
-  --color-secondary-800: 240, 250, 254;
-  --color-secondary-900: 250, 253, 255;
+  /* === Secondary：青色（赛博蓝主色） === */
+  --color-secondary-50:  3,   22,  72;
+  --color-secondary-100: 5,   36, 112;
+  --color-secondary-200: 8,   54, 152;
+  --color-secondary-300: 10,  72, 192;
+  --color-secondary-400: 27,  108, 255;  /* 莱茵蓝 */
+  --color-secondary-500: 60,  155, 210;  /* ★ 主青（赛博感） */
+  --color-secondary-600: 91,  192, 235;
+  --color-secondary-700: 130, 207, 235;
+  --color-secondary-800: 184, 228, 246;
+  --color-secondary-900: 230, 245, 252;
 }

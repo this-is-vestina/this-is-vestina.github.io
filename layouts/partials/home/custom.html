@@ -1,0 +1,61 @@
+{{/*
+  Custom homepage — 全屏视频背景 + 居中半透明白字 + tsparticles 粒子
+  配置: [homepage].layout = "custom"
+  注意：作为 partial 被调用，不要用 {{ define "main" }} 包装
+*/}}
+
+<section class="rhine-hero">
+  {{/* === 视频背景 ===
+       视频文件路径: /videos/rhine-hero.mp4
+       把视频放到 static/videos/rhine-hero.mp4 即可访问
+       （占位时显示 CSS 渐变背景，不会黑屏）
+  */}}
+  <video autoplay loop muted playsinline preload="auto" class="rhine-hero-video"
+         poster="/img/hero-poster.jpg">
+    <source src="/videos/rhine-hero.mp4" type="video/mp4">
+  </video>
+  {{/* 视频加载失败时的纯 CSS 渐变占位 */}}
+  <div class="rhine-hero-fallback"></div>
+  {{/* 半透明蒙版：保证文字可读 */}}
+  <div class="rhine-hero-overlay"></div>
+
+  {{/* === tsparticles 粒子层（鼠标交互） === */}}
+  <div id="tsparticles"></div>
+
+  {{/* === 中央内容 === */}}
+  <div class="rhine-hero-content">
+    <div class="rhine-hero-chrome">
+      <span class="rhine-dot rhine-dot-circle rhine-dot-live"></span>
+      RHINE LAB · ONLINE · SESSION 0xA4F2
+    </div>
+
+    <h1 class="rhine-hero-title">-vestina-</h1>
+
+    <div class="rhine-hero-subtitle">
+      <a href="https://github.com/this-is-vestina" target="_blank" rel="noopener noreferrer">GITHUB</a>
+      <span class="rhine-hero-divider">·</span>
+      <a href="mailto:qxwan0890@gmail.com">qxwan0890@gmail.com</a>
+    </div>
+
+    <div class="rhine-hero-footer">
+      SCROLL DOWN · OR USE THE NAV ABOVE
+    </div>
+  </div>
+
+  {{/* 底部滚动指示器 */}}
+  <div class="rhine-hero-scroll">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M7 13l5 5 5-5M7 7l5 5 5-5"/>
+    </svg>
+  </div>
+</section>
+
+{{/* === 最近文章（保留 blog 功能） === */}}
+{{ if .Site.Params.homepage.showRecent | default false }}
+  <section class="rhine-recent">
+    <div class="rhine-recent-header">
+      <span class="rhine-chrome">RECENT TRANSMISSIONS</span>
+    </div>
+    {{ partial "recent-articles/main.html" . }}
+  </section>
+{{ end }}
