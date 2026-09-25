@@ -1,58 +1,97 @@
 /* =============================================================
- * Rhine Lab 配色方案 — 明日方舟莱茵生命风格
+ * Rhine Lab 配色方案 — 明日方舟莱茵生命 (磁带盒未来主义)
  * 文档: https://blowfish.page/docs/advanced-customisation/#colour-schemes
  *
- * 颜色规范（参考 Arknights 莱茵生命运营/HUD 配色）：
- *   主色:  #1B6CFF  莱茵生命蓝
- *   次色:  #4DA8DA  数据青
- *   高亮:  #5BC0EB  实时/活跃
- *   警告:  #E89B3C  警示橙
- *   危险:  #D14B4B  失败红
+ * 设计哲学（基于 Arknights 莱茵生命运营 UI）：
+ *   - 磁带盒未来主义：大面积浅色 + 高亮橙
+ *   - 原子朋克：曲面/流线造型的几何感
+ *   - NASA 朋克：写实工业细节（线条、网格）
  *
- * 背景层级：
- *   深底:  #0A1421  页面底
- *   面板:  #142638  卡片
- *   浮层:  #1B3050  hover
+ * 真实莱茵生命主色：
+ *   高亮橙 #FF6B1A  主色（按钮、强调、关键状态）
+ *   深蓝墨 #0F1E2E  主文字
+ *   数据青 #5BC0EB  辅助色（次级状态、数据）
+ *   米白   #F5F2EC  主背景
+ *   银灰   rgba(45,62,80,0.06) 半透明控件
  *
- * 字段说明：每个变量是 RGB 三元组（逗号分隔），供 Tailwind 编译。
- * 命名遵循 Blowfish 规范：{neutral|primary|secondary}-{50..900}
- * 注意：palette 不支持 950 阶
+ * 此文件支持 light / dark 两套变量：
+ *   - :root                   → light（默认）
+ *   - [data-theme="dark"]     → dark（用户切换后）
  * ============================================================= */
 
-:root {
-  /* === Neutral：冷灰/深蓝（背景/文本） === */
-  --color-neutral-50:  232, 241, 251;  /* #E8F1FB 主文本 */
-  --color-neutral-100: 200, 217, 233;  /* #C8D9E9 次文本 */
-  --color-neutral-200: 143, 168, 196;  /* #8FA8C4 muted  */
-  --color-neutral-300: 90, 115, 146;   /* #5A7392 faint   */
-  --color-neutral-400: 56, 75, 100;    /* #384B64         */
-  --color-neutral-500: 27, 48, 80;     /* #1B3050 elevated*/
-  --color-neutral-600: 20, 38, 56;     /* #142638 panel   */
-  --color-neutral-700: 14, 26, 43;     /* #0E1A2B deep 2  */
-  --color-neutral-800: 10, 20, 33;     /* #0A1421 deep 1  */
-  --color-neutral-900: 5, 11, 18;      /*  最深背景       */
+:root,
+[data-theme="light"] {
+  /* === Neutral：蓝灰墨黑（文字/边框/控件） === */
+  --color-neutral-50:  245, 242, 236;  /* #F5F2EC 主背景 */
+  --color-neutral-100: 235, 230, 220;  /* #EBE6DC 浅灰面板 */
+  --color-neutral-200: 207, 213, 220;  /* #CFD5DC 银灰边 */
+  --color-neutral-300: 165, 175, 188;  /* #A5AFBC 中灰 */
+  --color-neutral-400: 110, 124, 142;  /* #6E7C8E 次文字 */
+  --color-neutral-500: 60,  76,  96;   /* #3C4C60 副文字 */
+  --color-neutral-600: 35,  50,  70;   /* #233246 深文字 */
+  --color-neutral-700: 20,  34,  52;   /* #142234 */
+  --color-neutral-800: 15,  30,  46;   /* #0F1E2E 深墨黑 ★ */
+  --color-neutral-900: 8,   20,  32;   /* #081420 最深 */
 
-  /* === Primary：莱茵生命蓝（交互/链接/按钮） === */
-  --color-primary-50:  232, 241, 255;  /* #E8F1FF */
-  --color-primary-100: 191, 216, 255;  /* #BFD8FF */
-  --color-primary-200: 128, 176, 255;  /* #80B0FF */
-  --color-primary-300: 64, 144, 255;   /* #4090FF */
-  --color-primary-400: 27, 108, 255;   /* #1B6CFF ★ */
-  --color-primary-500: 14, 92, 232;    /* #0E5CE8 */
-  --color-primary-600: 10, 72, 192;    /* #0A48C0 */
-  --color-primary-700: 8, 54, 152;     /* #083698 */
-  --color-primary-800: 5, 36, 112;     /* #052470 */
-  --color-primary-900: 3, 22, 72;      /* #031648 */
+  /* === Primary：高亮橙（莱茵生命主色） === */
+  --color-primary-50:  255, 245, 232;  /* #FFF5E8 浅橙底 */
+  --color-primary-100: 255, 220, 184;  /* #FFDCB8 */
+  --color-primary-200: 255, 175, 110;  /* #FFAF6E */
+  --color-primary-300: 255, 130,  60;  /* #FF823C */
+  --color-primary-400: 255, 107,  26;  /* #FF6B1A ★ 高亮橙 */
+  --color-primary-500: 232, 90,   20;  /* #E85A14 深橙 */
+  --color-primary-600: 192, 73,   16;  /* #C04910 */
+  --color-primary-700: 152, 57,   12;  /* #98390C */
+  --color-primary-800: 112, 42,    9;  /* #702A09 */
+  --color-primary-900: 72,  27,    6;  /* #481B06 */
 
-  /* === Secondary：数据青/cyan（标签/状态点/数据） === */
-  --color-secondary-50:  224, 244, 252;  /* #E0F4FC */
-  --color-secondary-100: 179, 226, 245;  /* #B3E2F5 */
-  --color-secondary-200: 128, 207, 232;  /* #80CFE8 */
-  --color-secondary-300: 91, 192, 235;   /* #5BC0EB ★ */
-  --color-secondary-400: 77, 168, 218;   /* #4DA8DA */
-  --color-secondary-500: 58, 141, 194;   /* #3A8DC2 */
-  --color-secondary-600: 42, 114, 168;   /* #2A72A8 */
-  --color-secondary-700: 32, 88, 138;    /* #20588A */
-  --color-secondary-800: 22, 62, 107;    /* #163E6B */
-  --color-secondary-900: 13, 36, 77;     /* #0D244D */
+  /* === Secondary：数据青（次级/数据/状态） === */
+  --color-secondary-50:  230, 245, 252;  /* #E6F5FC */
+  --color-secondary-100: 184, 228, 246;  /* #B8E4F6 */
+  --color-secondary-200: 130, 207, 235;  /* #82CFEB */
+  --color-secondary-300: 91,  192, 235;  /* #5BC0EB ★ */
+  --color-secondary-400: 60,  155, 210;  /* #3C9BD2 */
+  --color-secondary-500: 38,  128, 184;  /* #2680B8 */
+  --color-secondary-600: 24,  100, 152;  /* #186498 */
+  --color-secondary-700: 14,  76,  120;  /* #0E4C78 */
+  --color-secondary-800: 8,   52,  88;   /* #083458 */
+  --color-secondary-900: 4,   30,  54;   /* #041E36 */
+}
+
+[data-theme="dark"] {
+  /* === Neutral（深色模式）：深蓝/灰黑背景 === */
+  --color-neutral-50:  8,   20,  32;   /* #081420 最深背景 */
+  --color-neutral-100: 15,  30,  46;   /* #0F1E2E */
+  --color-neutral-200: 20,  38,  56;   /* #142638 */
+  --color-neutral-300: 27,  48,  72;   /* #1B3048 */
+  --color-neutral-400: 50,  78,  110;  /* #324E6E */
+  --color-neutral-500: 90,  115, 146;  /* #5A7392 */
+  --color-neutral-600: 143, 168, 196;  /* #8FA8C4 */
+  --color-neutral-700: 200, 217, 233;  /* #C8D9E9 */
+  --color-neutral-800: 232, 241, 251;  /* #E8F1FB 主文字 */
+  --color-neutral-900: 245, 242, 236;  /* #F5F2EC 最亮文字 */
+
+  /* === Primary：深色模式用更亮的橙（避免视觉疲劳） === */
+  --color-primary-50:  72,  27,    6;
+  --color-primary-100: 112, 42,    9;
+  --color-primary-200: 152, 57,   12;
+  --color-primary-300: 192, 73,   16;
+  --color-primary-400: 232, 90,   20;
+  --color-primary-500: 255, 107,  26;   /* ★ 亮橙 */
+  --color-primary-600: 255, 130,  60;
+  --color-primary-700: 255, 175, 110;
+  --color-primary-800: 255, 220, 184;
+  --color-primary-900: 255, 245, 232;
+
+  /* === Secondary：青色保持，但提亮 === */
+  --color-secondary-50:  4,   30,  54;
+  --color-secondary-100: 8,   52,  88;
+  --color-secondary-200: 14,  76,  120;
+  --color-secondary-300: 38, 128, 184;
+  --color-secondary-400: 91, 192, 235;   /* ★ 主青 */
+  --color-secondary-500: 130, 207, 235;
+  --color-secondary-600: 184, 228, 246;
+  --color-secondary-700: 230, 245, 252;
+  --color-secondary-800: 240, 250, 254;
+  --color-secondary-900: 250, 253, 255;
 }

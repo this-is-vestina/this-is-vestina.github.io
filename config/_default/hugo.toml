@@ -2,7 +2,7 @@
 # 修改 baseURL 和 title 即可部署
 
 theme = "blowfish"
-baseURL = "https://your-username.github.io/"
+baseURL = "https://this-is-vestina.github.io/"
 defaultContentLanguage = "zh-cn"
 defaultContentLanguageInSubdir = false
 

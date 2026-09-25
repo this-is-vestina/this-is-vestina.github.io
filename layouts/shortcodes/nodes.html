@@ -1,0 +1,58 @@
+{{/*
+  Shortcode: nodes
+  渲染莱茵生命风格的"节点连线网络图"
+
+  用法：
+    {{< nodes >}}
+    [{"id":"a","x":50,"y":30,"label":"A"},{"id":"b","x":250,"y":60,"label":"B"},{"id":"c","x":150,"y":180,"label":"C"}]
+    {{< /nodes >}}
+
+  或者直接用预制样式：
+    {{< nodes preset="rhine-lab" >}}
+
+  preset="rhine-lab" 时显示莱茵生命预设（4 个角色节点 + 连线）。
+*/}}
+
+{{ $preset := .Get "preset" | default "" }}
+<div class="rhine-nodes">
+  <svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    {{ if eq $preset "rhine-lab" }}
+      <!-- 莱茵生命预设：4 个角色节点 + 连线（无向图） -->
+      <line class="node-line" x1="80"  y1="60"  x2="200" y2="50"  />
+      <line class="node-line" x1="200" y1="50"  x2="320" y2="80"  />
+      <line class="node-line" x1="80"  y1="60"  x2="180" y2="150" />
+      <line class="node-line" x1="200" y1="50"  x2="180" y2="150" />
+      <line class="node-line" x1="180" y1="150" x2="320" y2="80"  />
+      <line class="node-line" x1="200" y1="50"  x2="220" y2="180" />
+      <line class="node-line" x1="320" y1="80"  x2="220" y2="180" />
+      <line class="node-line" x1="180" y1="150" x2="220" y2="180" />
+
+      <circle class="node-circle" cx="80"  cy="60"  r="5" />
+      <circle class="node-circle" cx="200" cy="50"  r="5" />
+      <circle class="node-circle" cx="320" cy="80"  r="5" />
+      <circle class="node-circle" cx="180" cy="150" r="5" />
+      <circle class="node-circle" cx="220" cy="180" r="5" />
+
+      <text class="node-label" x="95"  y="64"  >A</text>
+      <text class="node-label" x="215" y="54"  >B</text>
+      <text class="node-label" x="335" y="84"  >C</text>
+      <text class="node-label" x="135" y="148" >D</text>
+      <text class="node-label" x="235" y="178" >E</text>
+    {{ else }}
+      <!-- 通用：从 shortcode body 读取 JSON 节点数据 -->
+      {{ $json := .Inner | default "[]" }}
+      {{ $nodes := $json | transform.Unmarshal }}
+      {{ range $i, $a := $nodes }}
+        {{ range $j, $b := $nodes }}
+          {{ if lt $j $i }}
+            <line class="node-line" x1="{{ $a.x }}" y1="{{ $a.y }}" x2="{{ $b.x }}" y2="{{ $b.y }}" />
+          {{ end }}
+        {{ end }}
+      {{ end }}
+      {{ range $nodes }}
+        <circle class="node-circle" cx="{{ .x }}" cy="{{ .y }}" r="5" />
+        <text class="node-label" x="{{ add .x 10 }}" y="{{ add .y 4 }}">{{ .label }}</text>
+      {{ end }}
+    {{ end }}
+  </svg>
+</div>

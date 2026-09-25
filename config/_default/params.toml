@@ -5,8 +5,11 @@
 
 # === 外观 ===
 colorScheme = "rhine"             # 自定义配色方案名（创建在 assets/css/schemes/rhine.css）
-defaultAppearance = "dark"        # 强制暗色
-autoSwitchAppearance = false      # 不自动切换
+defaultAppearance = "light"       # 莱茵生命默认浅色
+autoSwitchAppearance = true       # 允许用户切换深色
+
+# Logo — 莫比乌斯环（磁带盒未来主义）
+logo = "img/rhine-logo.svg"
 
 # === 功能开关 ===
 enableA11y = true
@@ -32,7 +35,7 @@ hotlinkFeatureImage = false
   showMenu = true
   showCopyright = true
   showThemeAttribution = true
-  showAppearanceSwitcher = false  # 强制暗色，隐藏切换器
+  showAppearanceSwitcher = true   # 启用明暗切换按钮
   showScrollToTop = true
 
 # === Homepage ===

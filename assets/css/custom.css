@@ -1,253 +1,342 @@
 /* =============================================================
- * Rhine Lab 莱茵生命样式覆盖
+ * Rhine Lab 样式覆盖 — 磁带盒未来主义版
  * 文档: https://blowfish.page/docs/advanced-customisation/#custom-css-or-js
  *
- * 此文件由 Blowfish 自动加载（无需 import）。
- * 覆盖主题默认样式 + 添加莱茵生命特有的视觉签名。
+ * 设计原则：
+ *   - 浅色为主，深色可切换
+ *   - 几何主义（直线 + 圆角 + 莫比乌斯环）
+ *   - 高对比（深墨黑文字 + 米白背景）
+ *   - 橙色作主色强调
  * ============================================================= */
 
 /* === 1. 字体加载 ===
- * Inter（UI） + Noto Sans SC（中文） + JetBrains Mono（终端/数据）
- * 用 Google Fonts CDN，font-display: swap 避免阻塞首屏
+ * Space Grotesk（UI，几何未来） + DM Mono（终端/数据）
+ * Noto Sans SC（中文）
  */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap');
 
-/* === 2. 全局变量：莱茵生命 token ===
- * 这里定义一些 scheme 里没覆盖的专用变量，方便后续复用
+/* === 2. 莱茵生命 token ===
  */
 :root {
-  --rhine-bg-deep:      #0A1421;
-  --rhine-bg-panel:     #142638;
-  --rhine-bg-elevated:  #1B3050;
-  --rhine-border:       rgba(77, 168, 218, 0.18);
-  --rhine-border-bright:rgba(91, 192, 235, 0.45);
-  --rhine-accent:       #1B6CFF;
+  --rhine-bg:           #F5F2EC;
+  --rhine-bg-elevated:  #FFFFFF;
+  --rhine-bg-panel:     #FAF8F4;
+  --rhine-bg-deep:      #0F1E2E;
+
+  --rhine-ink:          #0F1E2E;
+  --rhine-ink-soft:     #2D3E50;
+  --rhine-ink-muted:    #6E7C8E;
+
+  --rhine-orange:       #FF6B1A;
+  --rhine-orange-deep:  #E85A14;
   --rhine-cyan:         #5BC0EB;
-  --rhine-warn:         #E89B3C;
-  --rhine-error:        #D14B4B;
-  --rhine-ok:           #5BC0EB;
-  --rhine-text:         #E8F1FB;
-  --rhine-text-muted:   #8FA8C4;
-  --rhine-text-faint:   #5A7392;
+  --rhine-blue:         #1B6CFF;
 
-  /* 切角尺寸 */
-  --rhine-corner: 8px;
-  --rhine-corner-lg: 14px;
+  --rhine-line:         rgba(45, 62, 80, 0.15);
+  --rhine-line-strong:  rgba(45, 62, 80, 0.35);
+  --rhine-silver:       rgba(45, 62, 80, 0.04);
+  --rhine-silver-2:     rgba(45, 62, 80, 0.08);
 
-  /* 字体栈 */
-  --rhine-font-sans: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --rhine-font-mono: 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace;
+  --rhine-font-sans: 'Space Grotesk', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --rhine-font-mono: 'DM Mono', 'JetBrains Mono', 'Fira Code', Consolas, monospace;
 }
 
 /* === 3. 全局字体 === */
 html {
   font-family: var(--rhine-font-sans);
-  font-feature-settings: "cv11", "ss01", "ss03";
-  letter-spacing: 0.005em;
+  font-feature-settings: "ss01";
+  letter-spacing: 0.01em;
+  color: var(--rhine-ink);
 }
 
-code, pre, kbd, samp, .font-mono, .text-mono {
+code, pre, kbd, samp, .font-mono, .text-mono, .rhine-mono {
   font-family: var(--rhine-font-mono);
+  font-feature-settings: "ss01", "calt";
 }
 
-/* === 4. 全局背景：深蓝 + 细网格 === */
+/* === 4. 全局背景：米白 + 极浅几何纹 === */
 body {
-  background-color: var(--rhine-bg-deep);
+  background-color: var(--rhine-bg);
   position: relative;
 }
 
-/* 网格背景层（覆盖在 body 上） */
+/* 顶部"POWERED BY"风格的水平线（极细） */
 body::before {
   content: "";
   position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-image:
-    linear-gradient(to right, var(--rhine-border) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--rhine-border) 1px, transparent 1px);
-  background-size: 48px 48px;
-  background-position: center;
-  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
-  pointer-events: none;
-}
-
-/* 顶部/底部各加一条莱茵生命蓝细线 */
-body::after {
-  content: "";
-  position: fixed;
-  left: 0; right: 0;
-  top: 0;
-  height: 2px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    var(--rhine-cyan) 20%,
-    var(--rhine-accent) 50%,
-    var(--rhine-cyan) 80%,
-    transparent 100%);
-  opacity: 0.6;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: var(--rhine-orange);
   z-index: 100;
-  pointer-events: none;
+  opacity: 0.6;
 }
 
-/* === 5. 切角面板工具类 ===
- * 给任意元素加 .rhine-card 即可获得切角
+/* === 5. 切角组件（保留莱茵生命旧版的 logo 标识感） ===
+ * 注意：实际莱茵生命没有切角——这里我只用做小标识
+ */
+.rhine-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  font-family: var(--rhine-font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--rhine-ink);
+  background: var(--rhine-bg-elevated);
+  border: 1px solid var(--rhine-line);
+  clip-path: polygon(0 4px, 4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%);
+}
+
+/* === 6. 角色标签（莱茵生命风格） ===
+ *  <span class="rhine-role">CASTER</span>
+ *  黑色块 + 大写 + 单色
+ */
+.rhine-role {
+  display: inline-block;
+  padding: 3px 10px;
+  font-family: var(--rhine-font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: white;
+  background: var(--rhine-ink);
+}
+.rhine-role-defender { background: #0F1E2E; }
+.rhine-role-caster   { background: #1B6CFF; }
+.rhine-role-medic    { background: #5BC0EB; color: #0F1E2E; }
+.rhine-role-supporter{ background: #FF6B1A; }
+.rhine-role-guard    { background: #E85A14; }
+.rhine-role-sniper   { background: #2D3E50; }
+.rhine-role-vanguard { background: #6E7C8E; }
+.rhine-role-specialist { background: #D14B4B; }
+
+/* === 7. 状态点（圆点 + 方块）===
+ *  <span class="rhine-dot rhine-dot-live"></span>LIVE
+ */
+.rhine-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.rhine-dot-circle { border-radius: 50%; }
+.rhine-dot-square { border-radius: 0; }
+.rhine-dot-live   { background: var(--rhine-cyan); box-shadow: 0 0 0 3px rgba(91, 192, 235, 0.2); animation: rhine-pulse 1.8s ease-in-out infinite; }
+.rhine-dot-warn   { background: var(--rhine-orange); }
+.rhine-dot-error  { background: #D14B4B; }
+.rhine-dot-dim    { background: var(--rhine-ink-muted); }
+.rhine-dot-ok     { background: #2D8F5F; }
+
+@keyframes rhine-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(91, 192, 235, 0.2); }
+  50%      { box-shadow: 0 0 0 6px rgba(91, 192, 235, 0.05); }
+}
+
+/* === 8. 数据读数 / 系统文本 ===
+ *  <span class="rhine-data">STATUS · LIVE · 12.4s</span>
+ */
+.rhine-data {
+  font-family: var(--rhine-font-mono);
+  font-size: 0.78em;
+  color: var(--rhine-ink-soft);
+  letter-spacing: 0.06em;
+}
+
+/* 系统 chrome — RHINE LAB · ANALYSIS OS 风格的方括号标题 */
+.rhine-chrome {
+  font-family: var(--rhine-font-mono);
+  font-size: 0.72rem;
+  color: var(--rhine-ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+.rhine-chrome strong {
+  color: var(--rhine-ink);
+  font-weight: 500;
+}
+
+/* === 9. 卡片 / 面板：浅银灰半透明 + 细线边框 ===
+ * 不再用切角，改成圆角矩形（莱茵生命真实风格）
  */
 .rhine-card,
 article.bg-neutral,
 article.bg-primary,
 article.bg-secondary,
 .card,
-.prose article {
-  position: relative;
-  background-color: var(--rhine-bg-panel) !important;
-  border: 1px solid var(--rhine-border) !important;
-  clip-path: polygon(
-    0 var(--rhine-corner),
-    var(--rhine-corner) 0,
-    100% 0,
-    100% calc(100% - var(--rhine-corner)),
-    calc(100% - var(--rhine-corner)) 100%,
-    0 100%
-  );
-  transition: all 0.2s ease;
+.prose article,
+.prose figure {
+  background-color: var(--rhine-bg-elevated) !important;
+  border: 1px solid var(--rhine-line) !important;
+  border-radius: 4px !important;
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
 .rhine-card:hover,
 article.bg-neutral:hover,
-article.bg-primary:hover,
-article.bg-secondary:hover {
-  border-color: var(--rhine-border-bright) !important;
-  background-color: var(--rhine-bg-elevated) !important;
+article.bg-primary:hover {
+  border-color: var(--rhine-line-strong) !important;
+  transform: translateY(-1px);
 }
 
-/* === 6. 状态指示点 ===
- * <span class="rhine-dot rhine-dot-live">live</span>
- */
-.rhine-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-right: 6px;
-  vertical-align: middle;
-  box-shadow: 0 0 8px currentColor;
-}
-.rhine-dot-live {
-  color: var(--rhine-ok);
-  background: var(--rhine-ok);
-  animation: rhine-pulse 1.8s ease-in-out infinite;
-}
-.rhine-dot-warn { color: var(--rhine-warn); background: var(--rhine-warn); }
-.rhine-dot-error{ color: var(--rhine-error); background: var(--rhine-error); }
-.rhine-dot-dim  { color: var(--rhine-text-faint); background: var(--rhine-text-faint); box-shadow: none; }
-
-@keyframes rhine-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-/* === 7. 数据读数 / 终端风格文本 === */
-.rhine-data {
-  font-family: var(--rhine-font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.78em;
-  color: var(--rhine-text-muted);
-}
-
-.rhine-chrome {
-  font-family: var(--rhine-font-mono);
-  font-size: 0.75rem;
-  color: var(--rhine-text-faint);
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-}
-
-.rhine-chrome span {
-  color: var(--rhine-cyan);
-}
-
-/* === 8. Header 切角 + 蓝边 === */
-#header {
-  border-bottom: 1px solid var(--rhine-border);
-  background-color: rgba(10, 20, 33, 0.85) !important;
-  backdrop-filter: blur(10px);
-}
-
-/* === 9. 链接颜色：莱茵生命蓝 === */
+/* === 10. 链接 === */
 a, .prose a {
-  color: var(--rhine-cyan);
-  text-decoration-color: rgba(91, 192, 235, 0.3);
+  color: var(--rhine-blue);
+  text-decoration-color: rgba(27, 108, 255, 0.3);
   text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
   transition: color 0.15s ease;
 }
 a:hover, .prose a:hover {
-  color: var(--rhine-accent);
-  text-decoration-color: var(--rhine-accent);
+  color: var(--rhine-orange);
+  text-decoration-color: var(--rhine-orange);
 }
 
-/* === 10. 选中态 === */
+/* === 11. 选中态（橙色） === */
 ::selection {
-  background-color: var(--rhine-accent);
+  background-color: var(--rhine-orange);
   color: white;
 }
 
-/* === 11. 滚动条（细 + 莱茵生命色） === */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--rhine-bg-deep); }
+/* === 12. 滚动条（细 + 银灰） === */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: var(--rhine-bg-elevated);
-  border-radius: 4px;
+  background: rgba(45, 62, 80, 0.2);
+  border-radius: 3px;
 }
-::-webkit-scrollbar-thumb:hover { background: var(--rhine-cyan); }
+::-webkit-scrollbar-thumb:hover { background: var(--rhine-orange); }
 
-/* === 12. Profile 布局：让右侧头像区有 ID-card 切角 === */
-.profile-mode #profile .profile-card {
-  background-color: var(--rhine-bg-panel) !important;
-  border: 1px solid var(--rhine-border) !important;
-  clip-path: polygon(
-    0 14px, 14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%
-  );
+/* === 13. Header：浅色 + 橙色细线 === */
+#header {
+  background-color: rgba(245, 242, 236, 0.85) !important;
+  border-bottom: 1px solid var(--rhine-line);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-/* === 13. Footer 切角 === */
+/* === 14. Footer === */
 #footer {
-  border-top: 1px solid var(--rhine-border);
-  background-color: var(--rhine-bg-deep);
+  border-top: 1px solid var(--rhine-line);
+  background-color: var(--rhine-bg);
 }
 
-/* === 14. Hero / 标题样式 === */
-.prose h1, h1, .text-5xl, .text-4xl {
-  font-family: var(--rhine-font-sans);
-  font-weight: 700;
+/* === 15. 标题字重 === */
+h1, .text-4xl, .text-5xl, .text-6xl {
+  font-weight: 700 !important;
   letter-spacing: -0.02em;
+  color: var(--rhine-ink);
+}
+h2, h3, h4 {
+  letter-spacing: -0.01em;
+  color: var(--rhine-ink);
 }
 
-/* === 15. 代码块 === */
-.prose pre, pre {
-  background-color: #050B12 !important;
-  border: 1px solid var(--rhine-border) !important;
-  border-radius: 0 !important;
-  clip-path: polygon(
-    0 6px, 6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%
-  );
+/* === 16. 代码块：浅色 + 细线 === */
+.prose pre, pre, code:not(pre code) {
+  border: 1px solid var(--rhine-line) !important;
+  border-radius: 4px !important;
+  background: var(--rhine-bg-panel) !important;
+  color: var(--rhine-ink);
 }
 
-/* === 16. 隐藏主题自带的 Tailwind 圆角（莱茵生命用切角代替） === */
-.rounded-lg, .rounded-md, .rounded {
-  border-radius: 0 !important;
+/* === 17. 节点连线网络图 ===
+ *  <div class="rhine-nodes" data-nodes='[{"x":50,"y":30,"label":"A"},{"x":150,"y":80,"label":"B"},{"x":80,"y":150,"label":"C"}]'></div>
+ *  使用 SVG 绘制节点和连线
+ */
+.rhine-nodes {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--rhine-bg-panel);
+  border: 1px solid var(--rhine-line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.rhine-nodes svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.rhine-nodes .node-circle {
+  fill: var(--rhine-orange);
+  stroke: var(--rhine-bg-elevated);
+  stroke-width: 2;
+}
+.rhine-nodes .node-line {
+  stroke: var(--rhine-ink-soft);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.5;
+}
+.rhine-nodes .node-label {
+  fill: var(--rhine-ink);
+  font-family: var(--rhine-font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-/* === 17. 移动端：网格背景更稀疏 === */
-@media (max-width: 768px) {
-  body::before {
-    background-size: 32px 32px;
-    opacity: 0.5;
-  }
+/* === 18. 莫比乌斯环 Logo 容器 === */
+.rhine-mobius {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  vertical-align: middle;
+}
+.rhine-mobius svg {
+  width: 100%;
+  height: 100%;
+  stroke: var(--rhine-orange);
+  fill: none;
+  stroke-width: 2;
 }
 
-/* === 18. 减少动画（无障碍） === */
+/* === 19. "POWERED BY RHINE LAB" 风格的页脚徽章 === */
+.rhine-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--rhine-font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--rhine-ink-soft);
+}
+.rhine-badge::after {
+  content: "";
+  display: inline-block;
+  width: 32px;
+  height: 4px;
+  background: var(--rhine-orange);
+}
+
+/* === 20. 分割线 === */
+.rhine-divider {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right,
+    transparent 0%,
+    var(--rhine-line-strong) 50%,
+    transparent 100%);
+  margin: 2.5rem 0;
+}
+.rhine-divider-dotted {
+  border-top: 1px dashed var(--rhine-line);
+}
+
+/* === 21. 隐藏主题自带的强黑边框颜色（用莱茵生命浅色） === */
+.dark\:bg-neutral-50\/95 { background-color: rgba(245, 242, 236, 0.95) !important; }
+
+/* === 22. 减少动画（无障碍） === */
 @media (prefers-reduced-motion: reduce) {
   .rhine-dot-live { animation: none; }
   * { transition: none !important; }
+}
+
+/* === 23. 移动端微调 === */
+@media (max-width: 768px) {
+  .rhine-mobius { width: 24px; height: 24px; }
 }
