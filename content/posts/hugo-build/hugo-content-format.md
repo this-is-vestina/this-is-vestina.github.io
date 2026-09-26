@@ -271,7 +271,7 @@ content/posts/csapp/
 引用：
 
 ```markdown
-{{< figure src="diagram.png" >}}
+{{</* figure src="diagram.png" */>}}
 # 或
 ![示意图](diagram.png)
 ```
@@ -411,6 +411,52 @@ enableSearch = true
 ```
 
 具体看 [blowfish 文档](https://blowfish.page/docs/shortcodes/)。
+
+---
+
+## 11. 踩坑提醒：写文档示范 shortcode 时一定要转义
+
+**坑**：在 `.md` 里写裸 shortcode 语法 —— 哪怕包在 ``` ``` ``` 代码块、`` ` ` `` 内联代码、表格里 —— Hugo 都会**真的去解析它**。
+
+原因是 Hugo 处理 `.md` 的顺序：
+
+1. 拆 frontmatter
+2. **先**用正则扫短代码
+3. 再做 markdown → HTML
+
+第 2 步扫的是**原始文本**，markdown 语法（代码块、内联代码）还没生效。所以"代码块里的示例"和"真的 shortcode 调用"对 Hugo 来说没区别。
+
+**症状**：本地 `hugo server` 报：
+
+```
+ERROR error building site: assemble: failed to create page from pageMetaSource
+"/posts/foo.md:188:15": failed to extract shortcode:
+template for shortcode "name" not found
+```
+
+报错的 shortcode 名就是你在文档里随手写的占位符（比如 `name` / `xxx` / `my-shortcode`），因为这些名字在主题里根本不存在。
+
+**修法** —— 用 Hugo 的转义语法：
+
+| 源码写法 | Hugo 行为 | 渲染到页面上 |
+|---|---|---|
+| `{{</* figure */>}}` | 当 HTML 注释，不解析 | 字面文本 `{{</* figure */>}}`（去注释后是 `{{</* figure */>}}`） |
+| `{{</* figure */>}}`（裸写 = 把注释删了） | 真解析，调用 `figure` shortcode | 真的 `<figure>` 元素 |
+
+**技巧**：在 `{{</* * */>}}` 头部插 `/*`、`{{</* * */>}}` 尾部插 `*/`，Hugo 把整段当 HTML 注释跳过，markdown 渲染时再把 `/* */` 两边的字面文本原样输出。所以**源码写 `{{</* figure */>}}`，页面就显示 `{{</* figure */>}}`**（读者看到的"去注释后"字面文本里没有 `/* */`）。
+
+**例子**（示范 shortcode 用法时）：
+
+```markdown
+{{</* figure src="/img/foo.jpg" */>}}
+{{</* /figure */>}}
+```
+
+页面渲染出来的就是字面这两行 `{{</* figure */>}}` / `{{</* /figure */>}}`（去注释后是 `{{</* figure */>}}` / `{{</* /figure */>}}` —— 你看到的会是 `{{</* figure */>}}` / `{{</* /figure */>}}`），读者复制走就能直接用。
+
+**记住**：任何在文档/教程里**示范** shortcode 的写法，都默认带 `/* */` 转义。只有真要生效时才写裸的 `{{</* > */>}}`（去注释）。这是 Hugo 写文档的硬规矩 —— 跟 markdown 渲染行为有关，不是主题限制。
+
+> **本节自身的来历**：写这一节时第一次就漏转了表格里的 `{{</* figure */>}}`（去注释后是 `{{</* figure */>}}`），build 时第二次踩了同样的坑才修对。文档能教人，但执行还是要靠肌肉记忆。
 
 ---
 
