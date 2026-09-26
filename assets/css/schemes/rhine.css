@@ -15,12 +15,13 @@
  *   银灰   rgba(45,62,80,0.06) 半透明控件
  *
  * 此文件支持 light / dark 两套变量：
- *   - :root                   → light（默认）
- *   - [data-theme="dark"]     → dark（用户切换后）
+ *   - :root         → light（默认）
+ *   - html.dark     → dark（用户切换后）
+ *   注：blowfish 的 tailwind.config.js 锁死了 darkMode: "class"，
+ *   所以只能接 <html class="dark">，data-theme 属性从来不会被设。
  * ============================================================= */
 
-:root,
-[data-theme="light"] {
+:root {
   /* === Neutral：蓝灰墨黑（文字/边框/控件） === */
   --color-neutral-50:  245, 242, 236;  /* #F5F2EC 主背景 */
   --color-neutral-100: 235, 230, 220;  /* #EBE6DC 浅灰面板 */
@@ -58,7 +59,16 @@
   --color-secondary-900: 4,   30,  54;   /* #041E36 */
 }
 
-[data-theme="dark"] {
+html.dark {
+  /* === Bare 兼容层（blowfish compiled CSS 共 252 处引用）===
+   * 不带数字后缀的 --color-neutral / --color-primary / --color-secondary
+   * 是 bg-neutral / prose / 渐变 stop 的依据，必须显式覆写，
+   * 否则切到深色后这些地方仍是白底。
+   * 取值与同色系 50..900 块的"最深"档对齐。 */
+  --color-neutral:    5,   11,  18;   /* = -50  #050B12 */
+  --color-primary:    255, 107,  26;  /* = -500 #FF6B1A 莱茵橙 */
+  --color-secondary:  60,  155, 210;  /* = -500 #3C9BD2 数据青 */
+
   /* === Neutral（深色模式 · 赛博蓝）：深蓝黑底 === */
   --color-neutral-50:  5,   11,  18;   /* #050B12 最深背景 */
   --color-neutral-100: 10,  20,  33;   /* #0A1421 主背景 */
@@ -94,4 +104,32 @@
   --color-secondary-700: 130, 207, 235;
   --color-secondary-800: 184, 228, 246;
   --color-secondary-900: 230, 245, 252;
+}
+
+/* === Prose / Typography 高特异性覆写 ===
+ * blowfish main.css 的 .prose 块（特异度 0,1,0）直接定义 --tw-prose-invert-*
+ * = rgba(var(--color-neutral-300), 1) = #142638（dark 下跟 panel 同色）。
+ * rhine.css 的 dark 调色板把"浅/深档"反向了，但 typography 直接同档不切换，
+ * 所以 prose 文字 token 在 dark 下被赋了"反向"的深色 → 跟背景同色看不见。
+ *
+ * 修法：在 html.dark + .prose 选择器（特异度 0,2,0）下重新定义
+ * --tw-prose-invert-* 系列，直接给实值（不引用 --color-neutral-* 间接档）。*/
+html.dark .prose {
+  --tw-prose-invert-body:         rgba(184, 201, 221, 1);  /* #B8C9DD rhine-ink-soft */
+  --tw-prose-invert-headings:     rgba(232, 241, 251, 1);  /* #E8F1FB rhine-ink */
+  --tw-prose-invert-lead:         rgba(200, 217, 233, 1);  /* #C8D9E9 */
+  --tw-prose-invert-links:        rgba(255, 107,  26, 1);  /* #FF6B1A rhine-orange */
+  --tw-prose-invert-bold:         rgba(232, 241, 251, 1);
+  --tw-prose-invert-counters:     rgba(143, 168, 196, 1);  /* #8FA8C4 rhine-ink-muted */
+  --tw-prose-invert-bullets:      rgba(143, 168, 196, 1);
+  --tw-prose-invert-hr:           rgba(90, 115, 146, 0.3); /* #5A7392 30% */
+  --tw-prose-invert-quotes:       rgba(200, 217, 233, 1);
+  --tw-prose-invert-quote-borders:rgba(255, 107,  26, 0.5);
+  --tw-prose-invert-captions:     rgba(143, 168, 196, 1);
+  --tw-prose-invert-kbd:          rgba(232, 241, 251, 1);
+  --tw-prose-invert-code:         rgba(232, 241, 251, 1);
+  --tw-prose-invert-pre-code:     rgba(232, 241, 251, 1);
+  --tw-prose-invert-pre-bg:       rgba(5, 11, 18, 0.5);
+  --tw-prose-invert-th-borders:   rgba(90, 115, 146, 1);
+  --tw-prose-invert-td-borders:   rgba(90, 115, 146, 0.4);
 }

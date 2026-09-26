@@ -846,11 +846,22 @@ h2, h3, h4 {
   margin-bottom: 0.75rem;
 }
 
+/* 分类小方块。
+ * - 字体显式用 sans 栈：父级 .rhine-below-card-meta 是 --rhine-font-mono，
+ *   而 DM Mono / Consolas 都没有中文字形，会掉到系统等宽回退（Windows 上是
+ *   宋体）——中文分类名看起来像衬线体。这里改回 Noto Sans SC（黑体）。
+ * - 背景用 --rhine-bg-deep 而不是 --rhine-ink：前者在两套色板里都是深色，
+ *   是「黑块 + 白字」这个组合本身要的语义。 */
 .rhine-below-card-cat {
-  padding: 2px 8px;
-  background: var(--rhine-ink);
+  padding: 1px 6px;
+  background: var(--rhine-bg-deep);
   color: white;
-  font-size: 0.65rem;
+  font-family: var(--rhine-font-sans);
+  font-size: 0.6rem;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0.05em;  /* 覆盖 meta 行的 0.15em —— 中文不需要那么散 */
+  text-transform: none;
 }
 
 .rhine-below-card-title {
@@ -1286,4 +1297,59 @@ header .rhine-header-icons {
 }
 header .rhine-header-icons button {
   margin: 0 !important;
+}
+
+/* =============================================================
+ * 38. 博客列表卡片（/posts/ 卡片视图）—— 内部留白
+ *
+ * blowfish 的 article-link/card.html 结构：
+ *   .article-link--card > .p-4 > header > a > h2（标题）
+ *                                      > div（日期 · 阅读时长）
+ *                                      > div（分类/标签徽章）
+ *                                      > .article-link__summary
+ *
+ * 两个问题让中文标题显得挤：
+ *   1. .p-4 是 Tailwind 的 16px，四边一样紧；
+ *   2. h2 被 preflight 归零了 margin，标题和下面那行日期之间
+ *      只隔着 text-xl 的 4px 行距 —— 标题折成两行时最明显。
+ * ============================================================= */
+
+/* 内边距放宽一点 */
+main:not(:has(.rhine-hero)) .article-link--card > .p-4 {
+  padding: 1.4rem 1.4rem 1.1rem;
+}
+
+/* 标题：行高 1.75rem（≈1.4）放到 1.5，折行后两行不至于糊在一起。
+   同时把 <a> 变成块级，让 margin-bottom 真的落在标题和日期之间
+   （内联元素上的 h2 会生成匿名块，margin 不生效）。
+   注意：<a> 上还有 before:absolute before:inset-0 负责整卡点击，
+   ::before 的包含块是 .article-link--card（relative），不受影响。 */
+main:not(:has(.rhine-hero)) .article-link--card header a {
+  display: block;
+  margin-bottom: 0.6rem;
+}
+
+main:not(:has(.rhine-hero)) .article-link--card header h2 {
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+/* 博客卡片 meta 行（日期 · 阅读时长）：blowfish 给的是 text-neutral-500 / dark:text-neutral-400，
+ * 莱茵深色色板里 --color-neutral-400 太接近 body (#1B3050 vs #0A1421) → 字消失。
+ * 改用 --rhine-ink-muted（深色 token 下 = #8FA8C4 浅蓝灰，跟 body 对比度足够） */
+main:not(:has(.rhine-hero)) .article-link--card > .p-4 > div.text-sm {
+  color: var(--rhine-ink-muted);
+}
+/* 博客卡片摘要（blowfish 用 prose dark:prose-invert）：
+ * prose-invert body = --color-neutral-300，深色下 = #142638，跟卡片背景 #1B3050 同色系 → 字糊。
+ * 跟首页 .rhine-below-card-summary 保持一致用 --rhine-ink-soft（深色 = #B8C9DD） */
+main:not(:has(.rhine-hero)) .article-link__summary {
+  color: var(--rhine-ink-soft);
+}
+/* 博客卡片分类徽章（blowfish 用的 border-primary-400 text-primary-700）：
+ * 深色 token 下 primary-700 = 255,175,110 浅橙，跟深蓝灰背景比勉强能看但偏糊。
+ * 直接改用莱茵品牌色，深色下保留橙色辨识度。浅色下不动（原本就 OK）。 */
+html.dark main:not(:has(.rhine-hero)) .article-link--card span[class*="border-primary"] {
+  border-color: rgba(255, 107, 26, 0.6) !important;
+  color: var(--rhine-orange) !important;
 }

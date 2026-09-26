@@ -277,13 +277,18 @@
 
         if (bw > 0 && bh > 0) {
           sctx.clearRect(x0, y0, bw, bh);
-          sctx.globalCompositeOperation = "source-over";
-          for (let i = 0; i < pool.length; i++) {
-            const p = pool[i];
-            const a = alphaOf(p.life / p.max);
-            const d = cfg.dia(p, p.life / p.max) * 1.03;
-            sctx.globalAlpha = a;                 // 层内画满，由合成时的 alpha 统一压
-            sctx.drawImage(SPR_DARK, p.x - d / 2, p.y - d / 2, d, d);
+          // 暗色光晕层：SPR_DARK 是深蓝墨色，深色模式下与 body 同色看不见。
+          // 直接跳过整层 —— 亮粒子 (SPR_BRIGHT) 不受影响。
+          const isDark = document.documentElement.classList.contains("dark");
+          if (!isDark) {
+            sctx.globalCompositeOperation = "source-over";
+            for (let i = 0; i < pool.length; i++) {
+              const p = pool[i];
+              const a = alphaOf(p.life / p.max);
+              const d = cfg.dia(p, p.life / p.max) * 1.03;
+              sctx.globalAlpha = a;                 // 层内画满，由合成时的 alpha 统一压
+              sctx.drawImage(SPR_DARK, p.x - d / 2, p.y - d / 2, d, d);
+            }
           }
           ctx.globalCompositeOperation = "source-over";
           // 0.26 = 修复前「单颗粒子」的暗度，即原本想要的观感；
