@@ -1357,3 +1357,12 @@ html.dark main:not(:has(.rhine-hero)) .article-link--card span[class*="border-pr
   border-color: rgba(255, 107, 26, 0.6) !important;
   color: var(--rhine-orange) !important;
 }
+
+/* 系列 summary（blowfish 文章末尾 <details><summary>）：
+ * dark 下默认用 bg-primary-800 = 深橙，跟深蓝灰面板冲突且跟正文橙色 card tag 同色。
+ * 改成 #fff9e7 淡奶黄，跟深蓝灰面板形成柔和对比，又跟橙色 tag 区分开不撞色。*/
+html.dark main:not(:has(.rhine-hero)) details > summary {
+  background-color: #fff9e7 !important;
+  color: #0F1E2E !important;
+  border-color: #fff9e7 !important;
+}
