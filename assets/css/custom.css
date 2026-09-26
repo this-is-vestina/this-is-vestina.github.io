@@ -17,8 +17,7 @@
 
 /* === 2. 莱茵生命 token（light + dark 双套）===
  */
-:root,
-[data-theme="light"] {
+:root {
   --rhine-bg:           #F5F2EC;
   --rhine-bg-elevated:  #FFFFFF;
   --rhine-bg-panel:     #FAF8F4;
@@ -39,7 +38,7 @@
   --rhine-silver-2:     rgba(45, 62, 80, 0.08);
 }
 
-[data-theme="dark"] {
+html.dark {
   /* 赛博蓝深色版 */
   --rhine-bg:           #0A1421;
   --rhine-bg-elevated:  #142638;
@@ -244,7 +243,8 @@ a:hover, .prose a:hover {
  * 边框画在这层毛玻璃上，而不是 <header> 本身（它高度为 0） */
 #menu-blur {
   opacity: 1 !important;
-  background-color: rgba(245, 242, 236, 0.82) !important;
+  /* token 化底色：浅色下是米白，深色下自动变成 #142638 深蓝灰 */
+  background-color: color-mix(in srgb, var(--rhine-bg-elevated) 82%, transparent) !important;
   backdrop-filter: blur(12px) saturate(1.1);
   -webkit-backdrop-filter: blur(12px) saturate(1.1);
   box-shadow: none !important;
@@ -330,8 +330,10 @@ header .logo:hover svg {
   color: var(--rhine-orange);
 }
 
-/* === 14. Footer === */
-footer {
+/* === 14. Footer（仅站点 footer）===
+ * 注意：blowfish 文章页里 prev/next 也用 <footer>，不能一刀切。
+ * 限定到 #site-footer，避免误伤文章页内 footer.pt-8 让它变米白色横条。*/
+#site-footer {
   border-top: 1px solid var(--rhine-line);
   background-color: var(--rhine-bg);
 }
@@ -749,7 +751,7 @@ h2, h3, h4 {
   position: relative;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.6) inset,
-    0 8px 30px rgba(15, 30, 46, 0.04);
+    0 8px 30px color-mix(in srgb, var(--rhine-bg-deep) 4%, transparent);
 }
 
 /* 切角装饰（左上 + 右下两个小斜切）*/
@@ -821,7 +823,7 @@ h2, h3, h4 {
   border-color: var(--rhine-line-strong);
   /* 抬升交给 3D 倾斜的 --rhine-tilt-lift，这里不再设 transform
      —— 否则 :hover 特异性更高会把倾斜整个盖掉 */
-  box-shadow: 0 6px 20px rgba(15, 30, 46, 0.06);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--rhine-bg-deep) 6%, transparent);
 }
 .rhine-below-card:hover::before {
   transform: scaleY(1);
@@ -943,9 +945,11 @@ h2, h3, h4 {
   transition: transform 0.2s ease;
 }
 .rhine-below-more-link:hover {
-  background: var(--rhine-ink);
+  /* 用 --rhine-bg-deep 而不是 --rhine-ink：深色下 --rhine-ink 是
+     浅蓝白 (#E8F1FB) + 白字 = 字消失；bg-deep 是真深色，能跟白字对衬 */
+  background: var(--rhine-bg-deep);
   color: white;
-  border-color: var(--rhine-ink);
+  border-color: var(--rhine-bg-deep);
   text-decoration: none;
   transform: translateY(-1px);
 }
@@ -1028,7 +1032,7 @@ main {
 .rhine-col:hover {
   border-color: var(--rhine-line-strong);
   /* 同上：抬升由 3D 倾斜接管 */
-  box-shadow: 0 10px 28px rgba(15, 30, 46, 0.07);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--rhine-bg-deep) 7%, transparent);
 }
 .rhine-col:hover::before {
   transform: scaleY(1);
@@ -1185,7 +1189,7 @@ main:not(:has(.rhine-hero)) {
   padding: 3rem 3rem 0.5rem;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.6) inset,
-    0 8px 30px rgba(15, 30, 46, 0.04);
+    0 8px 30px color-mix(in srgb, var(--rhine-bg-deep) 4%, transparent);
 }
 
 /* =============================================================
@@ -1256,7 +1260,7 @@ main:not(:has(.rhine-hero)) .rhine-col {
 .rhine-col.is-tilting,
 .rhine-below-card.is-tilting {
   transition: transform 0.08s linear, box-shadow 0.3s ease;
-  box-shadow: 0 18px 40px -12px rgba(15, 30, 46, 0.22);
+  box-shadow: 0 18px 40px -12px color-mix(in srgb, var(--rhine-bg-deep) 22%, transparent);
   z-index: 2;
 }
 
