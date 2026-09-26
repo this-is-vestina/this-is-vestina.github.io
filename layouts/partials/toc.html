@@ -1,5 +1,5 @@
 {{/*
-  Override of blowfish's toc.html — adds click-based collapse for nested TOC items.
+  Override of blowfish's toc.html — adds click-based collapse + custom hover-reveal.
 
   Default blowfish behavior:
   - One <details id="TOCView"> wraps the WHOLE TOC for mobile toggle
@@ -10,57 +10,71 @@
   - Wraps EACH top-level <li> in its own <details> with <summary>
     so clicking a top-level heading toggles its sub-items
   - Default: collapsed (no 'open' attribute)
-  - Adds JS for:
-    1. Active heading highlight (.active on current heading link)
-    2. Auto-expand the path to the active heading
-  - Does NOT use smartTOC (we replaced it with our own)
+  - Structure (desktop):
+      <div class="toc-frame">               ← 固定定位的 "≡" 指示器 + TOC
+        <div class="toc-slide">              ← 实际可见/隐藏的 TOC 容器
+          <details id="TOCView">...</details>
+  - JS:
+    1. wrapTopLevelWithDetails — 折叠
+    2. scrollspy — 当前 heading 高亮 + 自动展开路径
+    3. hover show/hide with 200ms delay（mouse 在米白区 = 显示）
 */}}
 
 {{ $toc := .TableOfContents | emojify }}
 {{ $toc = replace $toc `id="TableOfContents"` (printf `id="TableOfContents" aria-label="%s"` (i18n "article.table_of_contents")) }}
 
-{{/* Desktop: TOC always visible (parent sidebar handles hide-on-leave) */}}
-<details
-  open
-  id="TOCView"
-  class="toc-right mt-0 overflow-y-auto overscroll-contain bf-scrollbar rounded-lg -ms-5 ps-5 pe-2 hidden lg:block">
-  <summary
-    class="block py-1 text-lg font-semibold cursor-pointer bg-neutral-100 text-neutral-800 -ms-5 ps-5 dark:bg-neutral-700 dark:text-neutral-100 lg:hidden">
-    {{ i18n "article.table_of_contents" }}
-  </summary>
-  <div
-    class="min-w-[220px] py-2 border-dotted border-s-1 -ms-5 ps-5 dark:border-neutral-600">
-    {{ $toc | safeHTML }}
-  </div>
-</details>
+{{/* Desktop + 移动：同一个 toc-frame，CSS 在 lg 以下折叠回卡片内 */}}
+<div class="toc-frame">
+  <button class="toc-tab" type="button" aria-label="显示目录" title="目录">
+    <span aria-hidden="true">≡</span>
+  </button>
 
-{{/* Mobile: collapsible TOC inside the article */}}
-<details class="toc-inside mt-0 overflow-hidden rounded-lg -ms-5 ps-5 lg:hidden">
-  <summary
-    class="py-1 text-lg font-semibold cursor-pointer bg-neutral-100 text-neutral-800 -ms-5 ps-5 dark:bg-neutral-700 dark:text-neutral-100 lg:hidden">
-    {{ i18n "article.table_of_contents" }}
-  </summary>
-  <div
-    class="py-2 border-dotted border-neutral-300 border-s-1 -ms-5 ps-5 dark:border-neutral-600">
-    {{ replace (.TableOfContents | emojify) `id="TableOfContents"` (printf `id="TableOfContentsMobile" aria-label="%s"` (i18n "article.table_of_contents")) | safeHTML }}
+  <div class="toc-slide">
+    <details
+      open
+      id="TOCView"
+      class="toc-right mt-0 overflow-y-auto overscroll-contain bf-scrollbar rounded-lg -ms-5 ps-5 pe-2 hidden lg:block">
+      <summary
+        class="block py-1 text-lg font-semibold cursor-pointer bg-neutral-100 text-neutral-800 -ms-5 ps-5 dark:bg-neutral-700 dark:text-neutral-100 lg:hidden">
+        {{ i18n "article.table_of_contents" }}
+      </summary>
+      <div
+        class="min-w-[220px] py-2 border-dotted border-s-1 -ms-5 ps-5 dark:border-neutral-600">
+        {{ $toc | safeHTML }}
+      </div>
+    </details>
+
+    {{/* Mobile: collapsible TOC inside the article */}}
+    <details class="toc-inside mt-0 overflow-hidden rounded-lg -ms-5 ps-5 lg:hidden">
+      <summary
+        class="py-1 text-lg font-semibold cursor-pointer bg-neutral-100 text-neutral-800 -ms-5 ps-5 dark:bg-neutral-700 dark:text-neutral-100 lg:hidden">
+        {{ i18n "article.table_of_contents" }}
+      </summary>
+      <div
+        class="py-2 border-dotted border-neutral-300 border-s-1 -ms-5 ps-5 dark:border-neutral-600">
+        {{ replace (.TableOfContents | emojify) `id="TableOfContents"` (printf `id="TableOfContentsMobile" aria-label="%s"` (i18n "article.table_of_contents")) | safeHTML }}
+      </div>
+    </details>
   </div>
-</details>
+</div>
 
 <script>
   (function () {
     'use strict'
-    /* === TOC 折叠 + scrollspy 高亮 ===
-     * 两件事:
-     *   1. 把每个顶层 <li> 套一层 <details>，默认折叠
-     *      点击 summary（H1 链接）→ 切换子项展开
-     *   2. 滚动时给当前 heading 链接加 .active 类
-     *      并自动展开它所在的 details（让读者看到自己在哪里）
+    /* === TOC 折叠 + scrollspy + hover 显示 ===
+     * 三件事:
+     *   1. 折叠：每个顶层 <li> 套一层 <details>，默认折叠，点击 summary 展开
+     *   2. scrollspy：滚动时给当前 heading 链接加 .active + 自动展开路径
+     *   3. hover 显示：监听 mouse 在米白区 (< 280px) → 加 .toc-shown；
+     *      mouse 离开 → 200ms 延迟后移除（防抖动）
      */
     const TOC_ID = 'TableOfContents'
     const ANCHOR_SELECTOR = '.anchor'
     const LINK_SELECTOR = 'a[href^="#"]'
     const ACTIVE_CLASS = 'active'
     const SCROLL_OFFSET_RATIO = 0.25
+    const HIDE_DELAY = 200
+    const HOVER_ZONE_WIDTH = 280  // px — mouse 在 viewport 左侧 280px 内算 hover
 
     function wrapTopLevelWithDetails(toc) {
       const rootUl = toc.querySelector(':scope > ul')
@@ -70,11 +84,11 @@
         const subList = li.querySelector(':scope > ul')
         const link = li.querySelector(':scope > a')
         if (!subList || !link) return
-        if (li.querySelector(':scope > details')) return  // already wrapped
+        if (li.querySelector(':scope > details')) return
 
         const details = document.createElement('details')
         const summary = document.createElement('summary')
-        summary.appendChild(link)  // 移动原 link 进 summary（不要 clone，留一份就行）
+        summary.appendChild(link)
         details.appendChild(summary)
         details.appendChild(subList)
 
@@ -110,13 +124,11 @@
       const activeId = getActiveAnchorId(anchors, SCROLL_OFFSET_RATIO)
       if (!activeId) return
 
-      // 清掉所有 .active，标当前
       links.forEach((link) => {
         const isActive = link.getAttribute('href') === `#${activeId}`
         link.classList.toggle(ACTIVE_CLASS, isActive)
       })
 
-      // 自动展开包含 active link 的 details（让读者看到当前位置）
       const activeLink = toc.querySelector(`a[href="#${CSS.escape(activeId)}"]`)
       if (!activeLink) return
       let el = activeLink
@@ -124,10 +136,63 @@
         if (el.tagName === 'DETAILS') el.open = true
         el = el.parentElement
       }
-
-      // 把 active link 滚到 TOC 视野里（如果它被内部 overflow 隐藏了）
-      // 用 block: 'nearest' — 如果已经可见就不动
       activeLink.scrollIntoView({ block: 'nearest' })
+    }
+
+    function initHoverShow() {
+      const slide = document.querySelector('.toc-slide')
+      const tab = document.querySelector('.toc-tab')
+      const frame = document.querySelector('.toc-frame')
+      if (!slide || !tab || !frame) return
+
+      let hideTimer = null
+      let mouseInFrame = false
+      let mouseInTab = false
+
+      const isInHoverZone = (e) => {
+        return e.clientX < HOVER_ZONE_WIDTH ||
+               mouseInFrame || mouseInTab
+      }
+
+      const show = () => {
+        if (hideTimer) { clearTimeout(hideTimer); hideTimer = null }
+        slide.classList.add('toc-shown')
+      }
+      const hide = () => {
+        if (hideTimer) clearTimeout(hideTimer)
+        hideTimer = setTimeout(() => {
+          slide.classList.remove('toc-shown')
+          hideTimer = null
+        }, HIDE_DELAY)
+      }
+
+      frame.addEventListener('mouseenter', () => { mouseInFrame = true; show() })
+      frame.addEventListener('mouseleave', () => { mouseInFrame = false; hide() })
+      tab.addEventListener('mouseenter', () => { mouseInTab = true; show() })
+      tab.addEventListener('mouseleave', () => { mouseInTab = false; hide() })
+
+      // 全局 mousemove: mouse 在 viewport 左侧 HOVER_ZONE_WIDTH 内 → 显示
+      // 用 rAF 节流，避免每次 mousemove 都触发 reflow
+      let lastX = -1
+      let rafScheduled = false
+      document.addEventListener('mousemove', (e) => {
+        if (e.clientX === lastX) return
+        lastX = e.clientX
+        if (rafScheduled) return
+        rafScheduled = true
+        requestAnimationFrame(() => {
+          rafScheduled = false
+          if (isInHoverZone({ clientX: lastX })) show()
+          else hide()
+        })
+      }, { passive: true })
+
+      // 触摸设备：点击 .toc-tab 切换
+      tab.addEventListener('touchstart', (e) => {
+        e.preventDefault()
+        if (slide.classList.contains('toc-shown')) hide()
+        else show()
+      }, { passive: false })
     }
 
     function initTOC() {
@@ -136,12 +201,10 @@
       wrapTopLevelWithDetails(toc)
       updateTOC(toc)
 
-      // 点击链接后，浏览器会跳转到锚点。等待 100ms 让滚动稳定再更新一次
       toc.querySelectorAll(LINK_SELECTOR).forEach((link) => {
         link.addEventListener('click', () => setTimeout(() => updateTOC(toc), 100))
       })
 
-      // scroll 监听
       let ticking = false
       window.addEventListener('scroll', () => {
         if (!ticking) {
@@ -153,8 +216,9 @@
         }
       }, { passive: true })
 
-      // hashchange
       window.addEventListener('hashchange', () => updateTOC(toc), { passive: true })
+
+      initHoverShow()
     }
 
     if (document.readyState === 'loading') {

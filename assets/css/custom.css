@@ -1261,70 +1261,101 @@ main:not(:has(.rhine-hero)) .max-w-prose {
  * 35. 文章目录（TOC）— 左米白区 + sticky + 折叠 + hover 浮现
  *
  * blowfish 默认 TOC 在右边（lg:order-last）且在白色卡片内。
- * 改：左侧 + 米白外 + sticky 不消失 + 点击折叠 + 默认隐藏 hover 浮现。
+ * 改：左侧 + 默认隐藏 + 点击折叠 + hover 浮现。
+ *
+ * 结构（layouts/partials/toc.html 输出）：
+ *   <div class="order-first ... lg:order-last">   ← flex item（blowfish 原生）
+ *     <div class="toc-frame">                     ← sticky 容器
+ *       <button class="toc-tab">≡</button>        ← 固定位置指示器（始终可见）
+ *       <div class="toc-slide">                   ← 实际 TOC，默认透明 + 微偏
+ *         <details id="TOCView">...</details>
  *
  * 关键 trick：
  *   1. 覆盖 lg:order-last → 让 TOC 排在 content 前面（左侧）
- *   2. position: sticky + top: 5rem → 悬浮跟随滚动
- *   3. margin-left: -16rem → 负 margin 把 TOC 拉到 <main> 之外
- *      （<main> padding 3rem = 48px，负 256px = 拉到米白区 208px）
- *   4. transform: translateX + hover → 默认缩到只剩右侧 ~28px 小条
- *      （露出"目录"图标作为提示），鼠标移上去完整滑出
- *   5. <details>/<summary> → 每个一级标题默认折叠子项，点击展开
- *      （折叠/展开行为由 layouts/partials/toc.html 里的 JS 注入）
+ *   2. body 有 overflow-x: hidden（hero 需要），所以不能用负 margin 把 TOC
+ *      拉到米白外 — 那样会被 body 裁掉导致 hover 事件不触发
+ *   3. 用 "opacity + 小幅 translateX" 做显示/隐藏：默认 opacity: 0 + translateX(-2rem)
+ *      完全看不见，hover 时 opacity: 1 + translateX(0) 滑入
+ *   4. "≡" 指示器独立用 position: fixed 在 viewport 左 16px — 始终可见，
+ *      不受 body overflow 限制（fixed 是相对 viewport）
+ *   5. JS 用全局 mousemove 检测 mouse x < 280px → 显示；离开米白区 → 200ms 延迟隐藏
+ *   6. <details>/<summary> 折叠逻辑由 toc.html 的 JS 注入
  * ============================================================= */
 @media (min-width: 1024px) {
   /* 取消 lg:order-last，让 TOC 排到 content 之前（左侧）*/
   main:not(:has(.rhine-hero)) section.flex.lg\:flex-row > div.order-first.lg\:order-last {
     order: -1 !important;
+    /* 显式宽 14rem = TOC 内容的实际宽度 */
+    width: 14rem;
+    max-width: 14rem;
+    flex-shrink: 0;
+    margin-left: 0 !important;  /* 覆盖 blowfish 的 lg:ms-auto */
+    margin-right: 1rem !important;  /* TOC 内容跟文章正文之间留 1rem 间距 */
   }
 
-  /* TOC 容器：sticky + 负 margin 拉到米白区 + 默认隐藏 */
-  main:not(:has(.rhine-hero)) section.flex.lg\:flex-row > div.order-first.lg\:order-last {
+  /* sticky 容器：放在 .order-first 里 */
+  main:not(:has(.rhine-hero)) .toc-frame {
     position: sticky;
     top: 5rem;
     align-self: flex-start;
-
-    /* 关键：负 margin 把 TOC 拉到 <main> padding 之外的米白区 */
-    margin-left: -16rem;
     width: 14rem;
     max-width: 14rem;
-
-    /* 取消右 padding (lg:ps-8)，加左 padding */
-    padding-left: 0 !important;
-    padding-right: 1rem;
-
-    /* hover 浮现：默认向左缩到只剩 28px 小条作为"把手"提示 */
-    transform: translateX(calc(-100% + 28px));
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform;
+    padding: 0 !important;
   }
 
-  /* 鼠标进入容器（包含右侧 28px 把手区）→ 滑出完整 TOC */
-  main:not(:has(.rhine-hero)) section.flex.lg\:flex-row > div.order-first.lg\:order-last:hover {
-    transform: translateX(0);
-  }
-
-  /* "把手"提示条 — 当 TOC 缩回去时露出来的窄条上有个橙色"目录"字 */
-  main:not(:has(.rhine-hero)) section.flex.lg\:flex-row > div.order-first.lg\:order-last::before {
-    content: "目录";
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    position: absolute;
-    right: 4px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    color: var(--rhine-orange);
+  /* 实际可见/隐藏的 TOC 容器
+   * 默认 opacity 0 + 向左偏移 2rem（仍然在 body content area 内，不被 overflow 裁掉）*/
+  main:not(:has(.rhine-hero)) .toc-slide {
+    width: 14rem;
+    max-width: 14rem;
+    padding: 0.5rem 0.75rem;
     background: var(--rhine-bg-elevated);
     border: 1px solid var(--rhine-line);
-    border-radius: 4px;
-    padding: 0.5rem 0.2rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(15, 30, 46, 0.04);
+
+    opacity: 0;
+    transform: translateX(-2rem);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  /* hover 显示（toc.html 里 JS 加的 .toc-shown）*/
+  main:not(:has(.rhine-hero)) .toc-slide.toc-shown {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  /* "≡" 指示器 — position: fixed 始终在 viewport 左 16px */
+  main:not(:has(.rhine-hero)) .toc-tab {
+    position: fixed;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
     line-height: 1;
-    font-weight: 600;
-    pointer-events: none;       /* 让穿透到容器 hover 监听 */
-    box-shadow: 0 1px 3px rgba(15, 30, 46, 0.06);
+    color: var(--rhine-orange);
+    opacity: 0.5;
+    background: var(--rhine-bg-elevated);
+    border: 1px solid var(--rhine-line);
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 30;
+    box-shadow: 0 2px 6px rgba(15, 30, 46, 0.06);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    user-select: none;
+  }
+
+  /* hover/active 时指示器变明显 */
+  main:not(:has(.rhine-hero)) .toc-tab:hover,
+  main:not(:has(.rhine-hero)) .toc-slide.toc-shown ~ .toc-tab {
+    opacity: 0.95;
   }
 
   /* TOC 内部样式：浅灰文字 + 紧凑 + 主色高亮 */
@@ -1332,7 +1363,7 @@ main:not(:has(.rhine-hero)) .max-w-prose {
     background: transparent;
     border: none;
     padding: 0;
-    max-height: calc(100vh - 6rem);
+    max-height: calc(100vh - 10rem);
     overflow-y: auto;
   }
 
@@ -1362,11 +1393,6 @@ main:not(:has(.rhine-hero)) .max-w-prose {
 
   /* ===== 折叠样式 ===== */
 
-  /* 顶层 li 里我们注入了 <details><summary>...</summary><ul>...</ul></details>
-   *   - 默认折叠（没有 open 属性）
-   *   - summary 里是 heading 链接
-   *   - 嵌套 ul 在 details 体内
-   */
   main:not(:has(.rhine-hero)) .toc > ul > li > details {
     margin-bottom: 0.15rem;
   }
@@ -1377,7 +1403,7 @@ main:not(:has(.rhine-hero)) .max-w-prose {
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.35rem;
     border-left: 2px solid transparent;
     padding-left: 0.6rem;
     margin: 0.1rem 0;
@@ -1392,20 +1418,24 @@ main:not(:has(.rhine-hero)) .max-w-prose {
     display: none;
   }
 
-  /* 自定义 ▶ / ▼ 图标 */
+  /* 自定义 ▶ / ▼ 图标 — 小号、半透明，正对标题左侧（不再斜上方） */
   main:not(:has(.rhine-hero)) .toc > ul > li > details > summary::before {
     content: "▸";
-    font-size: 0.7rem;
+    font-size: 0.55rem;
     color: var(--rhine-ink-soft);
-    transition: transform 0.15s ease, color 0.15s ease;
+    opacity: 0.4;
+    transition: transform 0.15s ease, color 0.15s ease, opacity 0.15s ease;
     flex-shrink: 0;
-    width: 0.8rem;
-    text-align: center;
+    width: 0.7rem;
+    text-align: left;
+    line-height: 1;
+    align-self: center;
   }
 
   main:not(:has(.rhine-hero)) .toc > ul > li > details[open] > summary::before {
     content: "▾";
     color: var(--rhine-orange);
+    opacity: 0.85;
   }
 
   main:not(:has(.rhine-hero)) .toc > ul > li > details > summary:hover {
@@ -1414,6 +1444,7 @@ main:not(:has(.rhine-hero)) .max-w-prose {
 
   main:not(:has(.rhine-hero)) .toc > ul > li > details > summary:hover::before {
     color: var(--rhine-orange);
+    opacity: 1;
   }
 
   /* summary 内的链接样式 — 让整行可点 + 抑制默认下划线 */
@@ -1439,7 +1470,7 @@ main:not(:has(.rhine-hero)) .max-w-prose {
     color: var(--rhine-ink-soft);
   }
 
-  /* 没有子项的叶子节点 — 跟 summary 同级，但要保持左边距和左边线 */
+  /* 叶子节点 */
   main:not(:has(.rhine-hero)) .toc > ul > li > a {
     border-left: 2px solid transparent;
     padding-left: 0.6rem;
