@@ -185,54 +185,54 @@ frontmatter 下面的正文用标准 Markdown，**外加** blowfish 提供的一
 
 ### 4.2 blowfish 提供的 shortcode
 
-短代码用 `{{< name args >}}...{{< /name >}}` 包裹。常用：
+短代码用 `` `{{</* name args */>}}...{{</* /name */>}}` `` 包裹（这里用 `/* */` 注释符转义，否则 Hugo 会真去解析它）。常用：
 
 ```markdown
-{{< figure src="/img/foo.jpg" caption="配图说明" >}}
-{{< highlight python >}}
+{{</* figure src="/img/foo.jpg" caption="配图说明" */>}}
+{{</* highlight python */>}}
 def hello():
     print("hi")
-{{< /highlight >}}
-{{< admonition type="tip" title="提示" >}}
+{{</* /highlight */>}}
+{{</* admonition type="tip" title="提示" */>}}
 这是一段提示框内容。type 可选：note / tip / info / warning / danger
-{{< /admonition >}}
-{{< tabs >}}
-{{< tab "Mac" >}} 用 brew install hugo {{< /tab >}}
-{{< tab "Linux" >}} 用 apt install hugo {{< /tab >}}
-{{< /tabs >}}
-{{< button href="/posts/" >}}返回首页{{< /button >}}
-{{< youtube id="dQw4w9WgXcQ" >}}
-{{< gallery >}}
+{{</* /admonition */>}}
+{{</* tabs */>}}
+{{</* tab "Mac" */>}} 用 brew install hugo {{</* /tab */>}}
+{{</* tab "Linux" */>}} 用 apt install hugo {{</* /tab */>}}
+{{</* /tabs */>}}
+{{</* button href="/posts/" */>}}返回首页{{</* /button */>}}
+{{</* youtube id="dQw4w9WgXcQ" */>}}
+{{</* gallery */>}}
 ![a](/img/1.jpg)
 ![b](/img/2.jpg)
-{{< /gallery >}}
-{{< lead >}}
+{{</* /gallery */>}}
+{{</* lead */>}}
 大字摘要文本。视觉上比正文更大、更醒目。
-{{< /lead >}}
+{{</* /lead */>}}
 ```
 
 ### 4.3 Hugo 内置（不依赖主题）
 
 ```markdown
-{{< figure src="..." >}}  # Hugo 自带，比 blowfish 简单一点
-{{< ref "/posts/foo.md" >}}  # 站内相对链接（编译时变成 /posts/foo/）
-{{< relref "foo.md" >}}  # 同上，更短
-{{< include "partial.html" >}}  # 嵌入另一个模板
+{{</* figure src="..." */>}}  # Hugo 自带，比 blowfish 简单一点
+{{</* ref "/posts/foo.md" */>}}  # 站内相对链接（编译时变成 /posts/foo/）
+{{</* relref "foo.md" */>}}  # 同上，更短
+{{</* include "partial.html" */>}}  # 嵌入另一个模板
 ```
 
 ### 4.4 数学 / 图表（要 config 启用）
 
 ```markdown
-{{< katex >}}
+{{</* katex */>}}
 \\( E = mc^2 \\)
-{{< /katex >}}
+{{</* /katex */>}}
 
-```mermaid
+\`\`\`mermaid
 graph TD
     A[写文章] --> B{草稿?}
     B -->|是| C[本地预览]
     B -->|否| D[git push]
-```
+\`\`\`
 ```
 
 启用方式见本文末尾"扩展开关"。
