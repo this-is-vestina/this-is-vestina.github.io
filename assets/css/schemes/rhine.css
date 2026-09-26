@@ -104,6 +104,32 @@ html.dark {
   --color-secondary-700: 130, 207, 235;
   --color-secondary-800: 184, 228, 246;
   --color-secondary-900: 230, 245, 252;
+
+  /* === Prose / Typography 覆盖 ===
+   * blowfish 的 .prose / .dark\:prose-invert 直接读 --tw-prose-* 系列 token，
+   * 而这套 token 默认绑定到 --color-neutral-300 / -200 / -50 等。
+   * 我们把 dark 调色板的"浅/深"做了反转（让 bg-neutral-700 = 浅色 panel），
+   * 但 prose 文字需要的是真正的浅色，所以这里单独覆盖：
+   * 把 prose 体系重映射到 rhine 的 ink / orange token，避免 typography
+   * 字段跟背景同色（prose 文字"消失"问题）。*/
+  --tw-prose-invert-body:         rgba(184, 201, 221, 1);  /* #B8C9DD rhine-ink-soft */
+  --tw-prose-invert-headings:     rgba(232, 241, 251, 1);  /* #E8F1FB rhine-ink */
+  --tw-prose-invert-lead:         rgba(200, 217, 233, 1);  /* #C8D9E9 */
+  --tw-prose-invert-links:        rgba(255, 107,  26, 1);  /* #FF6B1A rhine-orange */
+  --tw-prose-invert-bold:         rgba(232, 241, 251, 1);  /* #E8F1FB */
+  --tw-prose-invert-counters:     rgba(143, 168, 196, 1);  /* #8FA8C4 rhine-ink-muted */
+  --tw-prose-invert-bullets:      rgba(143, 168, 196, 1);
+  --tw-prose-invert-hr:           rgba(90, 115, 146, 0.3); /* #5A7392 30% */
+  --tw-prose-invert-quotes:       rgba(200, 217, 233, 1);
+  --tw-prose-invert-quote-borders:rgba(255, 107,  26, 0.5);
+  --tw-prose-invert-captions:     rgba(143, 168, 196, 1);
+  --tw-prose-invert-kbd:          rgba(232, 241, 251, 1);
+  --tw-prose-invert-kbd-shadows:  232, 241, 251;
+  --tw-prose-invert-code:         rgba(232, 241, 251, 1);
+  --tw-prose-invert-pre-code:     rgba(232, 241, 251, 1);
+  --tw-prose-invert-pre-bg:       rgba(5, 11, 18, 0.5);
+  --tw-prose-invert-th-borders:   rgba(90, 115, 146, 1);
+  --tw-prose-invert-td-borders:   rgba(90, 115, 146, 0.4);
 }
 
 /* === Prose / Typography 高特异性覆写 ===
