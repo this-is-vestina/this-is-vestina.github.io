@@ -1257,6 +1257,85 @@ main:not(:has(.rhine-hero)) .max-w-prose {
   max-width: 100%;
 }
 
+/* =============================================================
+ * 35. 文章目录（TOC）放在左侧米白区域，sticky 悬浮
+ *
+ * blowfish 默认 TOC 在右边（lg:order-last）且在白色卡片内。
+ * 改：左侧 + 米白外 + sticky 不消失。
+ *
+ * 关键 trick：
+ *   1. 覆盖 lg:order-last → 让 TOC 排在 content 前面（左侧）
+ *   2. position: sticky + top: 5rem → 悬浮跟随滚动
+ *   3. margin-left: -16rem → 负 margin 把 TOC 拉到 <main> 之外
+ *      （<main> padding 3rem = 48px，负 256px = 拉到米白区 208px）
+ * ============================================================= */
+@media (min-width: 1024px) {
+  /* 取消 lg:order-last，让 TOC 排到 content 之前（左侧）*/
+  main:not(:has(.rhine-hero)) section.flex.lg\:flex-row > div.order-first.lg\:order-last {
+    order: -1 !important;
+  }
+
+  /* TOC 容器：sticky + 负 margin 拉到米白区 */
+  main:not(:has(.rhine-hero)) section.flex.lg\:flex-row > div.order-first.lg\:order-last {
+    position: sticky;
+    top: 5rem;
+    align-self: flex-start;
+
+    /* 关键：负 margin 把 TOC 拉到 <main> padding 之外的米白区 */
+    margin-left: -16rem;
+    width: 14rem;
+    max-width: 14rem;
+
+    /* 取消右 padding (lg:ps-8)，加左 padding */
+    padding-left: 0 !important;
+    padding-right: 1rem;
+  }
+
+  /* TOC 内部样式：浅灰文字 + 紧凑 + 主色高亮 */
+  main:not(:has(.rhine-hero)) .toc {
+    background: transparent;
+    border: none;
+    padding: 0;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+  }
+
+  main:not(:has(.rhine-hero)) .toc a {
+    color: var(--rhine-ink-soft);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    padding: 0.15rem 0;
+    display: block;
+    border-left: 2px solid transparent;
+    padding-left: 0.6rem;
+    margin: 0.1rem 0;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  main:not(:has(.rhine-hero)) .toc a:hover {
+    color: var(--rhine-orange);
+  }
+
+  /* 当前 heading 高亮（如果 blowfish 支持） */
+  main:not(:has(.rhine-hero)) .toc a.active,
+  main:not(:has(.rhine-hero)) .toc a[aria-current="true"] {
+    color: var(--rhine-orange);
+    border-left-color: var(--rhine-orange);
+    font-weight: 500;
+  }
+}
+
+/* 小屏：TOC 折回卡片顶部（blowfish 默认行为，order-first）*/
+@media (max-width: 1023px) {
+  main:not(:has(.rhine-hero)) .toc {
+    background: var(--rhine-bg-panel);
+    border: 1px solid var(--rhine-line);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
 /* 小屏收紧卡片内边距，避免内容被挤得太窄 */
 @media (max-width: 768px) {
   main:not(:has(.rhine-hero)) {
