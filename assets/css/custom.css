@@ -1258,27 +1258,24 @@ main:not(:has(.rhine-hero)) .max-w-prose {
 }
 
 /* =============================================================
- * 35. 文章目录（TOC）— viewport 左边米白区 + fixed + 折叠 + hover 浮现
+ * 35. 文章目录（TOC）— viewport 左上角米白区 + fixed + 点按切换
  *
  * blowfish 默认 TOC 在右边（lg:order-last）且在白色卡片内。
- * 改：viewport 最左边（米白区）+ 默认隐藏 + 点击折叠 + hover 浮现。
+ * 改：viewport 左上角"≡"按钮 + 默认隐藏 + 点击展开 + 点外关闭。
  *
  * 结构（layouts/partials/toc.html 输出）：
  *   <div class="toc-frame">                       ← position: fixed 容器
- *     <button class="toc-tab">≡</button>          ← 始终可见的指示器
- *     <div class="toc-slide">                     ← 实际 TOC，默认透明
+ *     <button class="toc-tab">≡</button>          ← 左上角按钮（始终可见）
+ *     <div class="toc-slide">                     ← 实际 TOC，挂按钮下方
  *       <details id="TOCView">...</details>
  *
  * 关键 trick：
- *   1. toc-frame 用 position: fixed + left: 0 — 脱离 flex 布局，直接锚到
- *      viewport 左边缘的米白区；不受 body overflow-x: hidden 影响
- *   2. tab 在 frame 内左 16px（绝对定位），slide 在 tab 右边 8px 间隙
- *   3. slide 用 opacity 控制显隐（默认 0 → hover 时 1），用绝对定位 → 不参与布局
- *   4. frame 本身 pointer-events: none，只让 tab 和 shown-slide 接收事件
- *   5. 占位归零：toc-frame 在原 flex 布局里是第一个子元素，要先 width: 0
- *      否则会占住 14rem 把 article 推到右边
- *   6. JS 用全局 mousemove 检测 mouse x < 280px → 显示；离开米白区 → 200ms 延迟隐藏
- *   7. <details>/<summary> 折叠逻辑由 toc.html 的 JS 注入
+ *   1. toc-frame 用 position: fixed + left: 0 — 脱离 flex 布局，锚到 viewport
+ *      左上角的米白区；不受 body overflow-x: hidden 影响
+ *   2. tab 在 frame 内左上 (left: 16px, top: 16px)，小方块按钮
+ *   3. slide 挂在 tab 正下方（left 对齐 tab，top = tab bottom + 8px）
+ *   4. JS 点 tab 切换显示/隐藏；点 TOC 外 / Esc 关闭
+ *   5. <details>/<summary> 折叠逻辑由 toc.html 的 JS 注入
  * ============================================================= */
 @media (min-width: 1024px) {
   /* toc-frame 在 blowfish 原生 flex 布局里是第一个 div。
@@ -1290,71 +1287,65 @@ main:not(:has(.rhine-hero)) .max-w-prose {
     flex-shrink: 0 !important;
   }
 
-  /* fixed 容器：锚到 viewport 左边缘，脱离 flex 布局 */
+  /* fixed 容器：锚到 viewport 左上角 */
   main:not(:has(.rhine-hero)) .toc-frame {
     position: fixed;
     left: 0;
-    top: 5rem;
-    width: 16rem;  /* tab(28) + 间隙(8) + slide(14rem) */
-    pointer-events: none;  /* 整体不接收事件，下面单独打开 */
-    z-index: 30;
+    top: 0;
+    width: 16rem;
+    /* 高于 blowfish header 的 z-100（menu-blur），否则按钮被遮 */
+    z-index: 200;
   }
 
-  /* 实际可见/隐藏的 TOC 容器 — 紧贴在 tab 右边，顶部对齐 frame */
-  main:not(:has(.rhine-hero)) .toc-slide {
-    position: absolute;
-    left: 52px;  /* 16 + 28 + 8 间隙 */
-    top: 0;       /* 顶部对齐 frame 顶部，看完整目录从 1. 开始 */
-    width: 14rem;
-    max-width: 14rem;
-    max-height: calc(100vh - 6rem);  /* 不超出 viewport */
-    overflow-y: auto;
-    padding: 0.5rem 0.75rem;
-    background: var(--rhine-bg-elevated);
-    border: 1px solid var(--rhine-line);
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(15, 30, 46, 0.06);
-
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
-  }
-
-  /* hover 显示（toc.html 里 JS 加的 .toc-shown）*/
-  main:not(:has(.rhine-hero)) .toc-slide.toc-shown {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  /* "≡" 指示器 — 在 frame 内左 16px，始终可见 */
+  /* "≡" 按钮 — 左上角小方块 */
   main:not(:has(.rhine-hero)) .toc-tab {
     position: absolute;
     left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 28px;
-    height: 56px;
+    top: 16px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.1rem;
     line-height: 1;
     color: var(--rhine-orange);
-    opacity: 0.5;
     background: var(--rhine-bg-elevated);
     border: 1px solid var(--rhine-line);
     border-radius: 6px;
     cursor: pointer;
-    pointer-events: auto;  /* 接收 hover/click */
     box-shadow: 0 2px 6px rgba(15, 30, 46, 0.06);
-    transition: opacity 0.15s ease;
+    transition: opacity 0.15s ease, background 0.15s ease;
     user-select: none;
+    opacity: 0.7;
   }
 
-  /* hover/active 时指示器变明显 */
-  main:not(:has(.rhine-hero)) .toc-tab:hover,
-  main:not(:has(.rhine-hero)) .toc-slide.toc-shown ~ .toc-tab {
-    opacity: 0.95;
+  main:not(:has(.rhine-hero)) .toc-tab:hover {
+    opacity: 1;
+    background: var(--rhine-bg);
+  }
+
+  /* TOC 容器 — 挂在 tab 正下方 */
+  main:not(:has(.rhine-hero)) .toc-slide {
+    position: absolute;
+    left: 16px;            /* 与 tab 左对齐 */
+    top: 56px;             /* tab bottom (16+32=48) + 8px 间隙 */
+    width: 14rem;
+    max-width: 14rem;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    padding: 0.5rem 0.75rem;
+    background: var(--rhine-bg-elevated);
+    border: 1px solid var(--rhine-line);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(15, 30, 46, 0.08);
+
+    display: none;          /* 默认完全不渲染 */
+  }
+
+  /* 显示状态（JS 加 .toc-shown）*/
+  main:not(:has(.rhine-hero)) .toc-slide.toc-shown {
+    display: block;
   }
 
   /* TOC 内部样式：浅灰文字 + 紧凑 + 主色高亮 */

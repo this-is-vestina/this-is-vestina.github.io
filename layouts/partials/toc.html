@@ -61,20 +61,17 @@
 <script>
   (function () {
     'use strict'
-    /* === TOC 折叠 + scrollspy + hover 显示 ===
+    /* === TOC 折叠 + scrollspy + 点按切换 ===
      * 三件事:
      *   1. 折叠：每个顶层 <li> 套一层 <details>，默认折叠，点击 summary 展开
      *   2. scrollspy：滚动时给当前 heading 链接加 .active + 自动展开路径
-     *   3. hover 显示：监听 mouse 在米白区 (< 280px) → 加 .toc-shown；
-     *      mouse 离开 → 200ms 延迟后移除（防抖动）
+     *   3. 点按切换：点 ≡ 按钮显示/隐藏 TOC；点 TOC 外 / Esc 关闭
      */
     const TOC_ID = 'TableOfContents'
     const ANCHOR_SELECTOR = '.anchor'
     const LINK_SELECTOR = 'a[href^="#"]'
     const ACTIVE_CLASS = 'active'
     const SCROLL_OFFSET_RATIO = 0.25
-    const HIDE_DELAY = 200
-    const HOVER_ZONE_WIDTH = 280  // px — mouse 在 viewport 左侧 280px 内算 hover
 
     function wrapTopLevelWithDetails(toc) {
       const rootUl = toc.querySelector(':scope > ul')
@@ -139,60 +136,41 @@
       activeLink.scrollIntoView({ block: 'nearest' })
     }
 
-    function initHoverShow() {
+    function initClickToggle() {
       const slide = document.querySelector('.toc-slide')
       const tab = document.querySelector('.toc-tab')
       const frame = document.querySelector('.toc-frame')
       if (!slide || !tab || !frame) return
 
-      let hideTimer = null
-      let mouseInFrame = false
-      let mouseInTab = false
-
-      const isInHoverZone = (e) => {
-        return e.clientX < HOVER_ZONE_WIDTH ||
-               mouseInFrame || mouseInTab
+      const toggle = () => {
+        slide.classList.toggle('toc-shown')
+        const shown = slide.classList.contains('toc-shown')
+        tab.setAttribute('aria-expanded', shown ? 'true' : 'false')
+        tab.setAttribute('aria-label', shown ? '隐藏目录' : '显示目录')
       }
 
-      const show = () => {
-        if (hideTimer) { clearTimeout(hideTimer); hideTimer = null }
-        slide.classList.add('toc-shown')
-      }
-      const hide = () => {
-        if (hideTimer) clearTimeout(hideTimer)
-        hideTimer = setTimeout(() => {
+      tab.addEventListener('click', (e) => {
+        e.stopPropagation()
+        toggle()
+      })
+
+      // 点击 TOC 外面任意位置 → 关闭
+      document.addEventListener('click', (e) => {
+        if (!slide.classList.contains('toc-shown')) return
+        if (frame.contains(e.target)) return  // 点 frame 内部（tab/slide）忽略
+        slide.classList.remove('toc-shown')
+        tab.setAttribute('aria-expanded', 'false')
+        tab.setAttribute('aria-label', '显示目录')
+      })
+
+      // Esc 关闭
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && slide.classList.contains('toc-shown')) {
           slide.classList.remove('toc-shown')
-          hideTimer = null
-        }, HIDE_DELAY)
-      }
-
-      frame.addEventListener('mouseenter', () => { mouseInFrame = true; show() })
-      frame.addEventListener('mouseleave', () => { mouseInFrame = false; hide() })
-      tab.addEventListener('mouseenter', () => { mouseInTab = true; show() })
-      tab.addEventListener('mouseleave', () => { mouseInTab = false; hide() })
-
-      // 全局 mousemove: mouse 在 viewport 左侧 HOVER_ZONE_WIDTH 内 → 显示
-      // 用 rAF 节流，避免每次 mousemove 都触发 reflow
-      let lastX = -1
-      let rafScheduled = false
-      document.addEventListener('mousemove', (e) => {
-        if (e.clientX === lastX) return
-        lastX = e.clientX
-        if (rafScheduled) return
-        rafScheduled = true
-        requestAnimationFrame(() => {
-          rafScheduled = false
-          if (isInHoverZone({ clientX: lastX })) show()
-          else hide()
-        })
-      }, { passive: true })
-
-      // 触摸设备：点击 .toc-tab 切换
-      tab.addEventListener('touchstart', (e) => {
-        e.preventDefault()
-        if (slide.classList.contains('toc-shown')) hide()
-        else show()
-      }, { passive: false })
+          tab.setAttribute('aria-expanded', 'false')
+          tab.setAttribute('aria-label', '显示目录')
+        }
+      })
     }
 
     function initTOC() {
@@ -218,7 +196,7 @@
 
       window.addEventListener('hashchange', () => updateTOC(toc), { passive: true })
 
-      initHoverShow()
+      initClickToggle()
     }
 
     if (document.readyState === 'loading') {
