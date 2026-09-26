@@ -1258,16 +1258,20 @@ main:not(:has(.rhine-hero)) .max-w-prose {
 }
 
 /* =============================================================
- * 35. 文章目录（TOC）放在左侧米白区域，sticky 悬浮
+ * 35. 文章目录（TOC）— 左米白区 + sticky + 折叠 + hover 浮现
  *
  * blowfish 默认 TOC 在右边（lg:order-last）且在白色卡片内。
- * 改：左侧 + 米白外 + sticky 不消失。
+ * 改：左侧 + 米白外 + sticky 不消失 + 点击折叠 + 默认隐藏 hover 浮现。
  *
  * 关键 trick：
  *   1. 覆盖 lg:order-last → 让 TOC 排在 content 前面（左侧）
  *   2. position: sticky + top: 5rem → 悬浮跟随滚动
  *   3. margin-left: -16rem → 负 margin 把 TOC 拉到 <main> 之外
  *      （<main> padding 3rem = 48px，负 256px = 拉到米白区 208px）
+ *   4. transform: translateX + hover → 默认缩到只剩右侧 ~28px 小条
+ *      （露出"目录"图标作为提示），鼠标移上去完整滑出
+ *   5. <details>/<summary> → 每个一级标题默认折叠子项，点击展开
+ *      （折叠/展开行为由 layouts/partials/toc.html 里的 JS 注入）
  * ============================================================= */
 @media (min-width: 1024px) {
   /* 取消 lg:order-last，让 TOC 排到 content 之前（左侧）*/
@@ -1275,7 +1279,7 @@ main:not(:has(.rhine-hero)) .max-w-prose {
     order: -1 !important;
   }
 
-  /* TOC 容器：sticky + 负 margin 拉到米白区 */
+  /* TOC 容器：sticky + 负 margin 拉到米白区 + 默认隐藏 */
   main:not(:has(.rhine-hero)) section.flex.lg\:flex-row > div.order-first.lg\:order-last {
     position: sticky;
     top: 5rem;
@@ -1289,6 +1293,38 @@ main:not(:has(.rhine-hero)) .max-w-prose {
     /* 取消右 padding (lg:ps-8)，加左 padding */
     padding-left: 0 !important;
     padding-right: 1rem;
+
+    /* hover 浮现：默认向左缩到只剩 28px 小条作为"把手"提示 */
+    transform: translateX(calc(-100% + 28px));
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
+
+  /* 鼠标进入容器（包含右侧 28px 把手区）→ 滑出完整 TOC */
+  main:not(:has(.rhine-hero)) section.flex.lg\:flex-row > div.order-first.lg\:order-last:hover {
+    transform: translateX(0);
+  }
+
+  /* "把手"提示条 — 当 TOC 缩回去时露出来的窄条上有个橙色"目录"字 */
+  main:not(:has(.rhine-hero)) section.flex.lg\:flex-row > div.order-first.lg\:order-last::before {
+    content: "目录";
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--rhine-orange);
+    background: var(--rhine-bg-elevated);
+    border: 1px solid var(--rhine-line);
+    border-radius: 4px;
+    padding: 0.5rem 0.2rem;
+    line-height: 1;
+    font-weight: 600;
+    pointer-events: none;       /* 让穿透到容器 hover 监听 */
+    box-shadow: 0 1px 3px rgba(15, 30, 46, 0.06);
   }
 
   /* TOC 内部样式：浅灰文字 + 紧凑 + 主色高亮 */
@@ -1316,9 +1352,110 @@ main:not(:has(.rhine-hero)) .max-w-prose {
     color: var(--rhine-orange);
   }
 
-  /* 当前 heading 高亮（如果 blowfish 支持） */
+  /* 当前 heading 高亮（toc.html 里 JS 加的 .active） */
   main:not(:has(.rhine-hero)) .toc a.active,
   main:not(:has(.rhine-hero)) .toc a[aria-current="true"] {
+    color: var(--rhine-orange);
+    border-left-color: var(--rhine-orange);
+    font-weight: 500;
+  }
+
+  /* ===== 折叠样式 ===== */
+
+  /* 顶层 li 里我们注入了 <details><summary>...</summary><ul>...</ul></details>
+   *   - 默认折叠（没有 open 属性）
+   *   - summary 里是 heading 链接
+   *   - 嵌套 ul 在 details 体内
+   */
+  main:not(:has(.rhine-hero)) .toc > ul > li > details {
+    margin-bottom: 0.15rem;
+  }
+
+  /* 去掉浏览器默认的 ▶ 小三角 */
+  main:not(:has(.rhine-hero)) .toc > ul > li > details > summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    border-left: 2px solid transparent;
+    padding-left: 0.6rem;
+    margin: 0.1rem 0;
+    color: var(--rhine-ink-soft);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    user-select: none;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  main:not(:has(.rhine-hero)) .toc > ul > li > details > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* 自定义 ▶ / ▼ 图标 */
+  main:not(:has(.rhine-hero)) .toc > ul > li > details > summary::before {
+    content: "▸";
+    font-size: 0.7rem;
+    color: var(--rhine-ink-soft);
+    transition: transform 0.15s ease, color 0.15s ease;
+    flex-shrink: 0;
+    width: 0.8rem;
+    text-align: center;
+  }
+
+  main:not(:has(.rhine-hero)) .toc > ul > li > details[open] > summary::before {
+    content: "▾";
+    color: var(--rhine-orange);
+  }
+
+  main:not(:has(.rhine-hero)) .toc > ul > li > details > summary:hover {
+    color: var(--rhine-orange);
+  }
+
+  main:not(:has(.rhine-hero)) .toc > ul > li > details > summary:hover::before {
+    color: var(--rhine-orange);
+  }
+
+  /* summary 内的链接样式 — 让整行可点 + 抑制默认下划线 */
+  main:not(:has(.rhine-hero)) .toc > ul > li > details > summary > a {
+    color: inherit;
+    text-decoration: none;
+    flex: 1;
+    padding: 0;
+    margin: 0;
+    border: none;
+    font-weight: 500;
+  }
+
+  /* 嵌套子项缩进 + 小一号字 */
+  main:not(:has(.rhine-hero)) .toc > ul > li > details > ul {
+    padding-left: 0.8rem;
+    margin-top: 0.1rem;
+    margin-bottom: 0.1rem;
+  }
+
+  main:not(:has(.rhine-hero)) .toc > ul > li > details > ul a {
+    font-size: 0.8rem;
+    color: var(--rhine-ink-soft);
+  }
+
+  /* 没有子项的叶子节点 — 跟 summary 同级，但要保持左边距和左边线 */
+  main:not(:has(.rhine-hero)) .toc > ul > li > a {
+    border-left: 2px solid transparent;
+    padding-left: 0.6rem;
+    margin: 0.1rem 0;
+    color: var(--rhine-ink-soft);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    display: block;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  main:not(:has(.rhine-hero)) .toc > ul > li > a:hover {
+    color: var(--rhine-orange);
+  }
+
+  main:not(:has(.rhine-hero)) .toc > ul > li > a.active {
     color: var(--rhine-orange);
     border-left-color: var(--rhine-orange);
     font-weight: 500;
