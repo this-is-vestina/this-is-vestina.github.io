@@ -1,0 +1,85 @@
+{{/*
+  Override of blowfish's default _default/list.html for the /posts/ section.
+
+  Why: with Page Bundle subfolders (csapp/, hugo-build/, _misc/), the default
+  .Pages iteration on /posts/ lists only the 3 subfolder section pages as
+  big cards. The user wanted to see all articles flat on this page, with
+  pagination if there are too many.
+
+  What this does:
+  - Pulls ALL RegularPages under Section "posts" (every .md file under any
+    subfolder of content/posts, regardless of which subfolder it lives in)
+  - Sorts by date desc, paginates (default 10 per page from site.Config.paginate)
+  - Within each paginated page, groups by year so the user still gets the
+    year-heading structure the default list has
+  - Uses the simple text-list partial (compact, scannable for many entries)
+*/}}
+
+{{ define "main" }}
+  {{ .Scratch.Set "scope" "list" }}
+  {{ $enableToc := .Params.showTableOfContents | default (site.Params.list.showTableOfContents | default false) }}
+  {{ $showToc := and $enableToc (in .TableOfContents "<ul") }}
+
+  {{/* Hero — same as default, controlled by site.Params.list.showHero */}}
+  {{ if site.Params.list.showHero | default false }}
+    {{ $heroStyle := print "hero/" site.Params.list.heroStyle ".html" }}
+    {{ if templates.Exists ( printf "partials/%s" $heroStyle ) }}
+      {{ partial $heroStyle . }}
+    {{ else }}
+      {{ partial "hero/basic.html" . }}
+    {{ end }}
+  {{ end }}
+
+  {{/* Header — title + meta line */}}
+  <header>
+    {{ if .Params.showBreadcrumbs | default (site.Params.list.showBreadcrumbs | default false) }}
+      {{ partial "breadcrumbs.html" . }}
+    {{ end }}
+    <h1 class="mt-5 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+      {{ .Title | emojify }}
+    </h1>
+    <div class="mt-1 mb-2 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
+      {{ partial "article-meta/list.html" (dict "context" . "scope" "single") }}
+    </div>
+  </header>
+
+  {{/* Description — _index.md 正文会渲染在这里 */}}
+  {{ $tocMargin := cond $showToc "mt-12" "mt-0" }}
+  {{ $topClass := cond (or (hasPrefix site.Params.header.layout "fixed") (eq site.Params.header.layout "floating")) "lg:top-[140px]" "lg:top-10" }}
+  <section class="{{ $tocMargin }} prose flex max-w-full flex-col dark:prose-invert lg:flex-row mb-10">
+    {{ if $showToc }}
+      <div class="order-first lg:ms-auto px-0 lg:order-last lg:ps-8 lg:max-w-2xs">
+        <div class="toc ps-5 print:hidden lg:sticky {{ $topClass }}">
+          {{ partial "toc.html" . }}
+        </div>
+      </div>
+    {{ end }}
+    <div class="min-w-0 min-h-0 max-w-prose w-full">
+      {{ .Content }}
+    </div>
+  </section>
+
+  {{/* 文章列表：扁平 + 按年分组 + 分页 */}}
+  {{ $posts := where .Site.RegularPages "Section" "posts" }}
+  {{ if gt (len $posts) 0 }}
+    {{ $paginator := .Paginate $posts }}
+    {{ $pageGroups := $paginator.Pages.GroupByDate "2006" }}
+    <section class="space-y-10 w-full">
+      {{ range $pageGroups }}
+        <h2 class="mt-12 text-2xl font-bold text-neutral-700 first:mt-8 dark:text-neutral-300">
+          {{ .Key }}
+        </h2>
+        {{ range .Pages }}
+          {{ partial "article-link/simple.html" . }}
+        {{ end }}
+      {{ end }}
+    </section>
+  {{ else }}
+    <section class="mt-10 prose dark:prose-invert">
+      <p class="py-8 border-t">
+        <em>{{ i18n "list.no_articles" | emojify }}</em>
+      </p>
+    </section>
+  {{ end }}
+  {{ partial "pagination.html" . }}
+{{ end }}
