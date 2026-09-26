@@ -2,18 +2,18 @@
 date = 2026-09-26
 draft = false
 title = 'Hugo 内容格式完全指南：frontmatter、_index 与 Markdown 扩展'
-summary = '一篇讲清楚 Hugo 文章 frontmatter 的每个字段、_index.md 怎么用、blowfish 支持哪些 Markdown 扩展。给下一任站长省下查文档的时间。'
+summary = '一篇讲清楚 Hugo 文章 frontmatter 的每个字段、_index.md 怎么用、blowfish 支持哪些 Markdown 扩展。'
 authors = ['Vue Holding']
 showDate = true
 showReadingTime = true
 showSummary = true
 series = ['Hugo 建站实战']
-series_order = 4
+series_order = 2
 categories = ['建站']
 tags = ['hugo', 'markdown', 'tutorial']
 +++
 
-写 Hugo 文章时，每个 `.md` 文件顶部那几行 `+++` 包裹的 TOML 块是什么？文件夹下的 `_index.md` 又是干嘛的？正文里能用哪些 Markdown 扩展？—— 这篇把这些问题一次讲清。
+写 Hugo 文章时，每个 `.md` 文件顶部那几行 `+++` 包裹的 TOML 块是什么？文件夹下的 `_index.md` 又是干嘛的？正文里能用哪些 Markdown 扩展？
 
 ## 1. 文章 frontmatter 详解
 
@@ -64,7 +64,7 @@ tags = ['csapp', '系统', '二进制']
 
 **可填可不填，但强烈建议**：
 
-- `series` + `series_order` —— 想要文章末尾的 `<details>` summary 折叠列表能正确出现并排序
+- `series` + `series_order` —— 文章末尾折叠列表要按顺序排
 - `categories` + `tags` —— 不填就走 blowfish 默认（很丑，没颜色边框）
 
 **高级可选**（按需）：
@@ -424,7 +424,7 @@ enableSearch = true
 2. **先**用正则扫短代码
 3. 再做 markdown → HTML
 
-第 2 步扫的是**原始文本**，markdown 语法（代码块、内联代码）还没生效。所以"代码块里的示例"和"真的 shortcode 调用"对 Hugo 来说没区别。
+第 2 步扫的是**原始文本**，markdown 语法（代码块、内联代码）还没生效。所以"代码块里的示例"和"真的 shortcode 调用"，在 Hugo 这里是一回事。
 
 **症状**：本地 `hugo server` 报：
 
@@ -462,4 +462,4 @@ template for shortcode "name" not found
 
 ## 一句话总结
 
-`+++` 包的是 frontmatter（每个字段对应**显示在哪里**），`_index.md` 是 section 页（`weight` 控制顺序），正文用 Markdown + blowfish shortcode。**先把这三件事想清楚，再写文章** —— 后面就是体力活了。
+`+++` 包的是 frontmatter（每个字段对应**显示在哪里**），`_index.md` 是 section 页（`weight` 控制顺序），正文用 Markdown + blowfish shortcode。**先把这三件事想清楚，再写文章** —— 后面就是套模板。

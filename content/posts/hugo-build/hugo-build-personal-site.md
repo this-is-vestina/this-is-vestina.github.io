@@ -8,12 +8,12 @@ showDate = true
 showReadingTime = true
 showSummary = true
 series = ['Hugo 建站实战']
-series_order = 5
+series_order = 1
 categories = ['建站']
 tags = ['hugo', 'blowfish', 'tutorial', 'github-pages']
 +++
 
-把建站的过程拆开讲，每一步都给你实际能跑的命令、可直接抄的配置、以及为什么这样选。这篇是**过程 + 决策**的记录，不是单一 API 文档 —— 跟其他 Hugo 教程比，重点在于"踩过的坑"和"当时为什么这样修"。
+详细记录了建站过程，每一步给能跑的命令、能直接抄的配置、以及为什么这么选。
 
 ## 1. 环境准备
 
@@ -142,7 +142,7 @@ autoSwitchAppearance = true     # 跟随系统
   showCopyright = true
 ```
 
-**主题推荐配置**：固定 header + 自定义首页 + 文章显示 TOC + 列表按年分组。这是"既漂亮又信息密度高"的默认组合。
+**主题推荐配置**：固定 header + 自定义首页 + 文章显示 TOC + 列表按年分组。
 
 ## 4. 主题定制
 
@@ -437,4 +437,4 @@ jobs:
 
 ## 一句话总结
 
-**Hugo + Blowfish + GitHub Pages** 三件套已经覆盖了 99% 个人站点的需求。先把环境装好（注意版本），主题接上（submodule），配置改对（colorScheme / homepage / params），内容用 Page Bundle 组织，自定义从 CSS 开始（成本最低、效果最大），最后用 GitHub Actions 自动部署。剩下的就是**写内容**了。
+**Hugo + Blowfish + GitHub Pages** 三件套，个人站点够用。环境装对（Hugo Extended，注意版本），主题 submodule 接上，配置改 baseURL + colorScheme，内容 Page Bundle 组织，自定义从 CSS 入手（投入最小效果最大），部署走 GitHub Actions。流程跑通，专心写文章。
