@@ -206,6 +206,31 @@ article.bg-primary:hover {
   transform: translateY(-1px);
 }
 
+/* === 9.5. 注释块 / blockquote：浅灰底 + 深灰字体 ===
+ * 覆盖 blowfish / Tailwind typography 默认的"左边竖线 + 斜体"，
+ * 改成整体浅灰底块，跟正文区分但不抢戏。
+ *
+ * - bg：var(--rhine-bg-panel) 浅色模式是 #FAF8F4 米白灰，
+ *       深色模式是 #1B3050 蓝灰。两种模式都有"灰色面板"感。
+ * - text：var(--rhine-ink-soft) 浅色 #2D3E50 深灰、深色 #B8C9DD 浅蓝灰。
+ * - border-l：保留 4px 主色边，跟原主题呼应。
+ * - italic：关掉，正式感更强（注释本来就该平实）。
+ */
+.prose blockquote {
+  background-color: var(--rhine-bg-panel) !important;
+  color: var(--rhine-ink-soft) !important;
+  border-left: 4px solid var(--rhine-orange) !important;
+  font-style: normal !important;
+  padding: 0.75rem 1.25rem !important;
+  border-radius: 0 4px 4px 0 !important;
+  margin: 1.5rem 0 !important;
+}
+
+.prose blockquote p {
+  color: var(--rhine-ink-soft) !important;
+  margin: 0 !important;
+}
+
 /* === 10. 链接 === */
 a, .prose a {
   color: var(--rhine-blue);
@@ -834,6 +859,32 @@ h2, h3, h4 {
   padding: 1.5rem 1.5rem 1.25rem;
   color: var(--rhine-ink);
   text-decoration: none;
+}
+
+/* === 卡片标题悬浮反馈 ===
+ * 鼠标悬浮在卡片上时，标题轻微放大 + 变橙色，做一个反应。
+ * scale 1.04 是经验值：太小（1.01）看不出，太大（1.1）抖动。
+ * transition 用 0.2s ease，让缩放跟阴影一起平滑出现。
+ */
+.rhine-below-card-title {
+  transition: transform 0.2s ease, color 0.2s ease;
+  transform-origin: left center;
+}
+
+.rhine-below-card:hover .rhine-below-card-title {
+  transform: scale(1.04);
+  color: var(--rhine-orange);
+}
+
+/* /posts/ 列表（blowfish 的 article-link--simple）标题同样效果 */
+.article-link--simple header h2 {
+  transition: transform 0.2s ease, color 0.2s ease;
+  transform-origin: left center;
+}
+
+.article-link--simple:hover header h2 {
+  transform: scale(1.04);
+  color: var(--rhine-orange);
 }
 
 .rhine-below-card-meta {
