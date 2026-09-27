@@ -1258,6 +1258,18 @@ main:not(:has(.rhine-hero)) .max-w-prose {
 }
 
 /* =============================================================
+ * 34.5. Breadcrumb "/" 分隔符去橙色
+ *
+ * blowfish 的 breadcrumbs.html 里分隔符用了 text-primary-500（橙色），
+ * 在文章顶部出现得最显眼，去掉它的颜色，让 "/" 用普通中性灰。
+ * ============================================================= */
+.text-primary-500.px-1,
+ol.text-sm > li > span.px-1 {
+  color: var(--rhine-ink-soft) !important;
+  opacity: 0.5;
+}
+
+/* =============================================================
  * 35. 文章目录（TOC）— viewport 左上角米白区 + fixed + 点按切换
  *
  * blowfish 默认 TOC 在右边（lg:order-last）且在白色卡片内。
@@ -1291,13 +1303,13 @@ main:not(:has(.rhine-hero)) .max-w-prose {
   main:not(:has(.rhine-hero)) .toc-frame {
     position: fixed;
     left: 0;
-    top: 0;
+    top: 72px;  /* header (56px) + 16px 间距，避开标题栏 */
     width: 16rem;
     /* 高于 blowfish header 的 z-100（menu-blur），否则按钮被遮 */
     z-index: 200;
   }
 
-  /* "≡" 按钮 — 左上角小方块 */
+  /* "≡" 按钮 — header 下方小方块 */
   main:not(:has(.rhine-hero)) .toc-tab {
     position: absolute;
     left: 16px;
