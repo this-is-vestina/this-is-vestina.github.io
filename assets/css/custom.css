@@ -486,6 +486,56 @@ h2, h3, h4 {
   .rhine-mobius { width: 24px; height: 24px; }
 }
 
+/* === 23b. 音乐播放按钮（左下角，白色音符） === */
+.rhine-music-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  background: rgba(10, 20, 33, 0.45);
+  color: #ffffff;
+  cursor: pointer;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0.7;
+  transition: opacity 180ms ease, transform 180ms ease, background 180ms ease;
+}
+
+.rhine-music-button:hover {
+  opacity: 1;
+  transform: scale(1.05);
+  background: rgba(10, 20, 33, 0.7);
+}
+
+.rhine-music-button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 2px;
+  opacity: 1;
+}
+
+.rhine-music-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.rhine-music-button.is-on {
+  color: #ffffff;
+}
+
+.rhine-music-button.is-empty {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rhine-music-button { transition: none; }
+}
+
 /* =============================================================
  * 24. Rhine Hero（自定义首页 — 全屏视频背景 + 居中文字 + 粒子）
  * ============================================================= */
