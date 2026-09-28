@@ -42,7 +42,7 @@
   }
 
   const state = {
-    enabled: readPersist("music.enabled", "1") !== "0",
+    enabled: readPersist("music.enabled", null) === "1",
     volume: Math.max(0, Math.min(1, Number(readPersist("music.volume", DEFAULT_VOLUME)) || DEFAULT_VOLUME)),
     tracks: [],
     index: 0,
