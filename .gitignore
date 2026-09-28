@@ -32,3 +32,10 @@ desktop.ini
 *.log
 .env
 .env.local
+__pycache__/
+*.pyc
+
+# Wallpaper Engine 原始资源与未授权音频：仓库仅保留构建后的去音频场景
+wallpaper/scene.pkg
+static/wallpaper/scene.pkg
+wallpaper_full/sounds/

@@ -1,0 +1,1179 @@
+{
+	"camera" : 
+	{
+		"center" : "0.00000 0.00000 -1.00000",
+		"eye" : "0.00000 0.00000 0.00000",
+		"up" : "0.00000 1.00000 0.00000"
+	},
+	"general" : 
+	{
+		"ambientcolor" : "0.30000 0.30000 0.30000",
+		"bloom" : false,
+		"bloomhdrfeather" : 0.1,
+		"bloomhdriterations" : 8,
+		"bloomhdrscatter" : 1.619,
+		"bloomhdrstrength" : 2.0,
+		"bloomhdrthreshold" : 1.0,
+		"bloomstrength" : 2.0,
+		"bloomthreshold" : 0.64999998,
+		"bloomtint" : "1.00000 1.00000 1.00000",
+		"camerafade" : true,
+		"cameraparallax" : false,
+		"cameraparallaxamount" : 0.5,
+		"cameraparallaxdelay" : 0.1,
+		"cameraparallaxmouseinfluence" : 0.5,
+		"camerapreview" : true,
+		"camerashake" : false,
+		"camerashakeamplitude" : 0.5,
+		"camerashakeroughness" : 1.0,
+		"camerashakespeed" : 3.0,
+		"clearcolor" : "0.70000 0.70000 0.70000",
+		"clearenabled" : true,
+		"farz" : 10000.0,
+		"fov" : 50.0,
+		"gravitydirection" : "0.00000 -1.00000 0.00000",
+		"gravitystrength" : 1.0,
+		"hdr" : false,
+		"nearz" : 0.0099999998,
+		"orthogonalprojection" : 
+		{
+			"height" : 1776,
+			"width" : 3200
+		},
+		"perspectiveoverridefov" : 90.0,
+		"skylightcolor" : "0.30000 0.30000 0.30000",
+		"winddirection" : "0.70700 0.70700 0.00000",
+		"windenabled" : false,
+		"windstrength" : 1.0,
+		"zoom" : 1.0
+	},
+	"objects" : 
+	[
+		{
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/shake/effect.json",
+					"id" : 335,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"constantshadervalues" : 
+							{
+								"bounds" : "0 1",
+								"friction" : "1 1",
+								"speed" : 1.0,
+								"strength" : 0.1
+							},
+							"id" : 337,
+							"textures" : [ null, "masks/shake_mask_1bd8b3c8" ]
+						}
+					],
+					"visible" : true
+				},
+				{
+					"file" : "effects/workshop/2795521260/color_grading/effect.json",
+					"id" : 772,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"combos" : 
+							{
+								"GAMMA" : 1,
+								"LINEAR" : 1,
+								"TOOLS" : 3
+							},
+							"constantshadervalues" : 
+							{
+								"Brightness" : 0,
+								"Channel influence" : "1 1 1",
+								"Chroma" : 
+								{
+									"user" : "bgchroma",
+									"value" : 0
+								},
+								"Color filter" : 
+								{
+									"user" : "bgfilteraddsahueontop",
+									"value" : "1.00000 1.00000 1.00000"
+								},
+								"Contrast" : 0,
+								"Corrected display gamma" : 2.2,
+								"Hue shift" : 
+								{
+									"user" : "bghue",
+									"value" : 1
+								},
+								"Initial display gamma" : 2.2,
+								"Opacity" : 1
+							},
+							"id" : 773
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 263,
+			"image" : "models/wakeup.json",
+			"name" : "wakeup",
+			"origin" : "1600.00000 888.00000 0.00000",
+			"size" : "3200.00000 1776.00000"
+		},
+		{
+			"alpha" : 0.72000003,
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/shimmer/effect.json",
+					"id" : 221,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"constantshadervalues" : 
+							{
+								"ui_editor_properties_brightness" : 2.8,
+								"ui_editor_properties_color" : "0.9176470588235294 0.8431372549019608 0.9019607843137255",
+								"ui_editor_properties_delay" : 2.19,
+								"ui_editor_properties_direction" : 2.4357149,
+								"ui_editor_properties_granularity" : 1.42,
+								"ui_editor_properties_offset" : 0.0,
+								"ui_editor_properties_speed" : 0.92
+							},
+							"id" : 222
+						}
+					],
+					"visible" : true
+				},
+				{
+					"file" : "effects/waterripple/effect.json",
+					"id" : 261,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"constantshadervalues" : 
+							{
+								"animationspeed" : 0.08,
+								"ratio" : 1.14,
+								"ripplestrength" : 0.09,
+								"scale" : 0.94,
+								"scrolldirection" : 1.2371618,
+								"scrollspeed" : 0.26
+							},
+							"id" : 262,
+							"textures" : [ null, null, "effects/waterripplenormal" ]
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 220,
+			"image" : "models/halo.json",
+			"name" : "halo",
+			"origin" : "1444.87061 1396.54358 0.00000",
+			"size" : "267.00000 385.00000"
+		},
+		{
+			"alpha" : 
+			{
+				"user" : "veiltransparency",
+				"value" : 1.0
+			},
+			"angles" : "-0.00000 -0.00000 -0.10183",
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/waterwaves/effect.json",
+					"id" : 267,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"constantshadervalues" : 
+							{
+								"direction" : 1.0925827,
+								"exponent" : 1.0,
+								"scale" : 19.81,
+								"speed" : 3.97,
+								"strength" : 0.08
+							},
+							"id" : 268
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 266,
+			"image" : "models/veils.json",
+			"name" : "veils",
+			"origin" : "1742.51453 1105.10181 0.00000",
+			"scale" : "0.95344 1.09312 1.00000",
+			"size" : "1306.00000 889.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 1362,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 1377,
+					"name" : "Animasyon 1",
+					"rate" : 1.03,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/waterwaves/effect.json",
+					"id" : 825,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"combos" : 
+							{
+								"PERSPECTIVE" : 1
+							},
+							"constantshadervalues" : 
+							{
+								"direction" : 1.7281754,
+								"exponent" : 1.0,
+								"point0" : "0 0",
+								"point1" : "1 0",
+								"point2" : "1 1",
+								"point3" : "0 1",
+								"scale" : 29.709999,
+								"speed" : 5.0,
+								"strength" : 0.13
+							},
+							"id" : 826
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 595,
+			"image" : "models/7.json",
+			"name" : "7",
+			"origin" : "1819.36938 787.13989 0.00000",
+			"size" : "776.00000 417.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 1276,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 1291,
+					"name" : "Animasyon 1",
+					"rate" : 1.03,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/waterwaves/effect.json",
+					"id" : 820,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"combos" : 
+							{
+								"PERSPECTIVE" : 1
+							},
+							"constantshadervalues" : 
+							{
+								"direction" : 1.7281754,
+								"exponent" : 1.0,
+								"point0" : "0 0",
+								"point1" : "1 0",
+								"point2" : "1 1",
+								"point3" : "0 1",
+								"scale" : 29.709999,
+								"speed" : 5.0,
+								"strength" : 0.1
+							},
+							"id" : 821
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 592,
+			"image" : "models/6.json",
+			"name" : "6",
+			"origin" : "1814.60742 848.65533 0.00000",
+			"size" : "806.00000 367.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 1189,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 1204,
+					"name" : "Animasyon 1",
+					"rate" : 0.94999999,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/waterwaves/effect.json",
+					"id" : 815,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"combos" : 
+							{
+								"PERSPECTIVE" : 1
+							},
+							"constantshadervalues" : 
+							{
+								"direction" : 1.5390182,
+								"exponent" : 1.0,
+								"point0" : "0 0",
+								"point1" : "1 0",
+								"point2" : "1 1",
+								"point3" : "0 1",
+								"scale" : 29.709999,
+								"speed" : 5.0,
+								"strength" : 0.1
+							},
+							"id" : 816
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 589,
+			"image" : "models/5.json",
+			"name" : "5",
+			"origin" : "1897.50647 865.92462 0.00000",
+			"size" : "974.00000 529.00000"
+		},
+		{
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/waterwaves/effect.json",
+					"id" : 810,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"combos" : 
+							{
+								"PERSPECTIVE" : 1
+							},
+							"constantshadervalues" : 
+							{
+								"direction" : 1.7281754,
+								"exponent" : 1.0,
+								"point0" : "0 0",
+								"point1" : "1 0",
+								"point2" : "1 1",
+								"point3" : "0 1",
+								"scale" : 29.709999,
+								"speed" : 5.0,
+								"strength" : 0.1
+							},
+							"id" : 811
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 586,
+			"image" : "models/4.json",
+			"name" : "4",
+			"origin" : "2063.59912 994.16260 0.00000",
+			"size" : "1242.00000 391.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 1037,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 1052,
+					"name" : "Animasyon 1",
+					"rate" : 1.03,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/waterwaves/effect.json",
+					"id" : 805,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"combos" : 
+							{
+								"PERSPECTIVE" : 1
+							},
+							"constantshadervalues" : 
+							{
+								"direction" : 1.7281754,
+								"exponent" : 1.0,
+								"point0" : "0 0",
+								"point1" : "1 0",
+								"point2" : "1 1",
+								"point3" : "0 1",
+								"scale" : 29.709999,
+								"speed" : 5.0,
+								"strength" : 0.1
+							},
+							"id" : 806
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 583,
+			"image" : "models/3.json",
+			"name" : "3",
+			"origin" : "2022.81189 1040.50610 0.00000",
+			"size" : "1151.00000 348.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 936,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 964,
+					"name" : "Animasyon 1",
+					"rate" : 0.94,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/waterwaves/effect.json",
+					"id" : 800,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"combos" : 
+							{
+								"PERSPECTIVE" : 1
+							},
+							"constantshadervalues" : 
+							{
+								"direction" : 1.7281754,
+								"exponent" : 1.0,
+								"point0" : "0 0",
+								"point1" : "1 0",
+								"point2" : "1 1",
+								"point3" : "0 1",
+								"scale" : 29.709999,
+								"speed" : 5.0,
+								"strength" : 0.1
+							},
+							"id" : 801
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 580,
+			"image" : "models/2.json",
+			"name" : "2",
+			"origin" : "2044.46191 924.31793 0.00000",
+			"size" : "1232.00000 494.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 965,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 980,
+					"name" : "Animasyon 1",
+					"rate" : 1.0,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/waterwaves/effect.json",
+					"id" : 774,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"combos" : 
+							{
+								"PERSPECTIVE" : 1
+							},
+							"constantshadervalues" : 
+							{
+								"direction" : 1.7281754,
+								"exponent" : 1.0,
+								"point0" : "0 0",
+								"point1" : "1 0",
+								"point2" : "1 1",
+								"point3" : "0 1",
+								"scale" : 29.71,
+								"speed" : 5.0,
+								"strength" : 0.1
+							},
+							"id" : 775
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 576,
+			"image" : "models/1.json",
+			"name" : "1",
+			"origin" : "1980.44531 1193.19666 0.00000",
+			"size" : "1021.00000 360.00000"
+		},
+		{
+			"angles" : "0.00000 -0.00000 0.59921",
+			"disablepropagation" : false,
+			"id" : 48,
+			"image" : "models/hairback.json",
+			"name" : "hairback",
+			"origin" : "1496.68799 1037.67419 0.00000",
+			"scale" : "1.37056 1.01698 1.05510",
+			"size" : "248.00000 195.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 1041,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 1057,
+					"name" : "Animasyon 1",
+					"rate" : 0.51999998,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/waterwaves/effect.json",
+					"id" : 840,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"combos" : 
+							{
+								"PERSPECTIVE" : 1
+							},
+							"constantshadervalues" : 
+							{
+								"direction" : 1.7281754,
+								"exponent" : 1.0,
+								"point0" : "0 0",
+								"point1" : "1 0",
+								"point2" : "1 1",
+								"point3" : "0 1",
+								"scale" : 29.709999,
+								"speed" : 5.0,
+								"strength" : 0.03
+							},
+							"id" : 841
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 42,
+			"image" : "models/hairfrontside.json",
+			"name" : "hairfrontside",
+			"origin" : "1759.58130 1228.00659 0.00000",
+			"size" : "178.00000 205.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 200,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 205,
+					"name" : "Animasyon 1",
+					"rate" : 1.0,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"id" : 24,
+			"image" : "models/face.json",
+			"name" : "face",
+			"origin" : "1676.70093 1210.20325 0.00000",
+			"size" : "180.00000 215.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 399,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 409,
+					"name" : "Animasyon 1",
+					"rate" : 0.76999998,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"id" : 27,
+			"image" : "models/body.json",
+			"name" : "body",
+			"origin" : "1641.07324 795.70898 0.00000",
+			"size" : "380.00000 676.00000"
+		},
+		{
+			"disablepropagation" : false,
+			"id" : 452,
+			"image" : "models/legs.json",
+			"name" : "legs",
+			"origin" : "1807.13318 418.98248 0.00000",
+			"size" : "590.00000 397.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 445,
+					"blend" : 0.72000003,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 448,
+					"name" : "Animasyon 1",
+					"rate" : 1.02,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/waterwaves/effect.json",
+					"id" : 631,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"constantshadervalues" : 
+							{
+								"direction" : -0.94883441,
+								"exponent" : 0.50999999,
+								"scale" : 19.81,
+								"speed" : 1,
+								"strength" : 0.05
+							},
+							"id" : 632,
+							"textures" : [ null, "masks/waterwaves_mask_7ebed581" ]
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 366,
+			"image" : "models/skırt.json",
+			"name" : "skırt",
+			"origin" : "1263.62256 612.05182 0.00000",
+			"size" : "1861.00000 792.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 336,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 340,
+					"name" : "Animasyon 1",
+					"rate" : 0.94999999,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/waterwaves/effect.json",
+					"id" : 850,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"combos" : 
+							{
+								"PERSPECTIVE" : 1
+							},
+							"constantshadervalues" : 
+							{
+								"direction" : 3.053786,
+								"exponent" : 2.01,
+								"point0" : "0 0",
+								"point1" : "1 0",
+								"point2" : "1 1",
+								"point3" : "0 1",
+								"scale" : 34.66,
+								"speed" : 4.71,
+								"strength" : 0.05
+							},
+							"id" : 851
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 51,
+			"image" : "models/hairback1.json",
+			"name" : "hairback1",
+			"origin" : "1423.46899 832.96759 0.00000",
+			"size" : "402.00000 460.00000"
+		},
+		{
+			"angles" : "0.00000 -0.00000 0.09663",
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 504,
+					"blend" : 0.55000001,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 572,
+					"name" : "Animasyon 2",
+					"rate" : 0.60000002,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/waterwaves/effect.json",
+					"id" : 874,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"combos" : 
+							{
+								"PERSPECTIVE" : 1
+							},
+							"constantshadervalues" : 
+							{
+								"direction" : 2.3221626,
+								"exponent" : 1.0,
+								"point0" : "0 0",
+								"point1" : "1 0",
+								"point2" : "1 1",
+								"point3" : "0 1",
+								"scale" : 29.709999,
+								"speed" : 5.0,
+								"strength" : 0.04
+							},
+							"id" : 875
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 54,
+			"image" : "models/hairback0.json",
+			"name" : "hairback0",
+			"origin" : "1367.92249 970.41077 0.00000",
+			"size" : "664.00000 732.00000"
+		},
+		{
+			"disablepropagation" : false,
+			"id" : 39,
+			"image" : "models/hairfront2.json",
+			"name" : "hairfront2",
+			"origin" : "1777.52808 1311.33032 0.00000",
+			"size" : "115.00000 100.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 238,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 241,
+					"name" : "Animasyon 1",
+					"rate" : 0.51999998,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"id" : 33,
+			"image" : "models/arms.json",
+			"name" : "arms",
+			"origin" : "1840.07495 1025.21619 0.00000",
+			"size" : "724.00000 414.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 581,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 601,
+					"name" : "Animasyon 1",
+					"rate" : 0.66000003,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/waterwaves/effect.json",
+					"id" : 416,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"constantshadervalues" : 
+							{
+								"direction" : 1.1674771,
+								"exponent" : 0.98,
+								"scale" : 24.76,
+								"speed" : 1,
+								"strength" : 0.05
+							},
+							"id" : 417
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 45,
+			"image" : "models/whitehair.json",
+			"name" : "whitehair",
+			"origin" : "1653.67468 1073.52893 0.00000",
+			"size" : "106.00000 181.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 890,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 893,
+					"name" : "Animasyon 1",
+					"rate" : 1.2,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"id" : 852,
+			"image" : "models/fdsafafas.json",
+			"name" : "fdsafafas",
+			"origin" : "1642.24475 1241.16467 0.00000",
+			"size" : "284.00000 291.00000"
+		},
+		{
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 360,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 363,
+					"name" : "Animasyon 1",
+					"rate" : 0.79000002,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"id" : 36,
+			"image" : "models/hairpiece.json",
+			"name" : "hairpiece",
+			"origin" : "1502.98621 1332.62964 0.00000",
+			"size" : "177.00000 203.00000"
+		},
+		{
+			"disablepropagation" : false,
+			"id" : 1389,
+			"image" : "models/flower.json",
+			"name" : "flower",
+			"origin" : "1365.63489 286.40686 0.00000",
+			"size" : "537.00000 576.00000"
+		},
+		{
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/shake/effect.json",
+					"id" : 184,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"constantshadervalues" : 
+							{
+								"bounds" : "0 1",
+								"friction" : "1 1",
+								"speed" : 1.44,
+								"strength" : 0.083
+							},
+							"id" : 185,
+							"textures" : [ null, "masks/shake_mask_863171ec" ]
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 260,
+			"image" : "models/flowers.json",
+			"name" : "flowers",
+			"origin" : "1098.16907 373.65289 0.00000",
+			"size" : "1907.00000 750.00000",
+			"visible" : 
+			{
+				"user" : "showflowers",
+				"value" : true
+			}
+		},
+		{
+			"angles" : "-0.00000 -0.00000 -0.21405",
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/shake/effect.json",
+					"id" : 824,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"combos" : 
+							{
+								"DIRECTION" : 2
+							},
+							"constantshadervalues" : 
+							{
+								"bounds" : "0 1",
+								"friction" : "1 1",
+								"speed" : 0.74,
+								"strength" : 0.17
+							},
+							"id" : 827,
+							"textures" : [ null, "masks/shake_mask_a202689a" ]
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 823,
+			"image" : "models/ear.json",
+			"name" : "ear",
+			"origin" : "1600.82739 1166.55249 0.00000",
+			"scale" : "1.12380 1.12380 1.00000",
+			"size" : "36.00000 37.00000"
+		},
+		{
+			"angles" : "0.00000 -0.00000 0.48130",
+			"animationlayers" : 
+			[
+				{
+					"additive" : false,
+					"animation" : 259,
+					"blend" : 1.0,
+					"blendin" : false,
+					"blendout" : false,
+					"blendtime" : 0.5,
+					"id" : 265,
+					"name" : "Animasyon 1",
+					"rate" : 0.74000001,
+					"visible" : true
+				}
+			],
+			"disablepropagation" : false,
+			"id" : 208,
+			"image" : "models/petal.json",
+			"name" : "petal",
+			"origin" : "2043.87354 1210.61096 0.00000",
+			"size" : "57.00000 34.00000"
+		},
+		{
+			"disablepropagation" : false,
+			"effects" : 
+			[
+				{
+					"file" : "effects/lightshafts/effect.json",
+					"id" : 286,
+					"name" : "",
+					"passes" : 
+					[
+						{
+							"combos" : 
+							{
+								"DIRECTDRAW" : 1,
+								"RAYCORNER" : 1,
+								"RAYMODE" : 2,
+								"RENDERING" : 1
+							},
+							"constantshadervalues" : 
+							{
+								"colorastart" : "1 1 1",
+								"colorend" : "0.43529411764705883 0.8862745098039215 1",
+								"colorwexponent" : 1.2,
+								"colorwintensity" : 1,
+								"noiseamount" : 0.33000001,
+								"noisescale" : 0.85,
+								"point0" : "0.00679 -0.07464",
+								"point1" : "0.85704 0.06238",
+								"point2" : "1.23074 0.95797",
+								"point3" : "-0.26564 1.12604",
+								"rayfeather" : "0.16 0.1",
+								"rayradius" : 0.15,
+								"rayscale" : "0.4 1.01",
+								"raysmoothness" : 0.54,
+								"rayspeed" : 0.27
+							},
+							"id" : 287
+						}
+					],
+					"visible" : true
+				}
+			],
+			"id" : 285,
+			"name" : "Işık hüzmeleri - köşe",
+			"origin" : "2341.93726 1133.20068 0.00000",
+			"shape" : "quad",
+			"visible" : 
+			{
+				"user" : "showlight",
+				"value" : true
+			}
+		},
+		{
+			"disablepropagation" : false,
+			"id" : 292,
+			"instanceoverride" : 
+			{
+				"colorn" : "1.00000 1.00000 1.00000",
+				"count" : 0.18000001,
+				"id" : 293,
+				"lifetime" : 0.94999999,
+				"rate" : 1.74,
+				"size" : 1.91,
+				"speed" : 0.17
+			},
+			"name" : "Sakura",
+			"origin" : "1273.49756 310.18549 0.00000",
+			"particle" : "particles/presets/leaves5.json",
+			"scale" : "2.48674 1.94447 1.00000",
+			"solid" : true,
+			"visible" : 
+			{
+				"user" : "showpetals1",
+				"value" : true
+			}
+		},
+		{
+			"disablepropagation" : false,
+			"id" : 374,
+			"maxtime" : 5.0,
+			"mintime" : 1.0,
+			"muteineditor" : false,
+			"name" : "TruE · Instrumental (Variation) - Honkai Star Rail 3.3 OST.mp3",
+			"playbackmode" : "random",
+			"solid" : true,
+			"sound" : 
+			[
+				"sounds/TruE · Instrumental (Variation) - Honkai Star Rail 3.3 OST.mp3",
+				"sounds/As We’ve Written · Homeland (Variation) - Honkai Star Rail 3.5 OST.mp3"
+			],
+			"startsilent" : false,
+			"volume" : 0.52999997
+		}
+	],
+	"version" : 5
+}

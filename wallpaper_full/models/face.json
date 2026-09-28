@@ -1,0 +1,5 @@
+{
+	"autosize" : true,
+	"material" : "materials/face.json",
+	"puppet" : "models/face_puppet.mdl"
+}

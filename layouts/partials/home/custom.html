@@ -78,6 +78,11 @@
     <source src="/img/hero-bg.mp4" type="video/mp4">
   </video>
 
+  {{/* Wallpaper Engine 场景层：首帧成功后覆盖视频，失败自动退回视频 */}}
+  <div class="rhine-hero-wallpaper" id="rhine-hero-wallpaper" aria-hidden="true"
+       data-scene-url="{{ "wallpaper" | relURL }}"
+       data-renderer-url="{{ "js/vendor/webwallgl/1.4.2/webwallgl.js" | relURL }}"></div>
+
   {{/* 视频加载失败时的兜底（静态首帧 + 渐变） */}}
   <div class="rhine-hero-fallback"></div>
 
@@ -138,6 +143,7 @@
     </svg>
   </div>
 </section>
+<script defer src="{{ "js/hero-wallpaper.js" | relURL }}"></script>
 
 {{/* === Hero 下方：内容区（白色卡片，置于米白背景上） === */}}
 <section class="rhine-below">

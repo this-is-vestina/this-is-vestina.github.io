@@ -1,0 +1,6 @@
+{
+	"autosize" : true,
+	"cropoffset" : "-134.00000 -111.00000",
+	"material" : "materials/5.json",
+	"puppet" : "models/5_puppet.mdl"
+}

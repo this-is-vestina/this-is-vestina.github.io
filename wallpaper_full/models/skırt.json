@@ -1,0 +1,6 @@
+{
+	"autosize" : true,
+	"cropoffset" : "-5.00000 -110.50000",
+	"material" : "materials/skırt.json",
+	"puppet" : "models/skırt_puppet.mdl"
+}

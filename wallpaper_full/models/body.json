@@ -1,0 +1,5 @@
+{
+	"autosize" : true,
+	"material" : "materials/body.json",
+	"puppet" : "models/body_puppet.mdl"
+}

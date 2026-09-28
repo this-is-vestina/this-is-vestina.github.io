@@ -515,6 +515,75 @@ h2, h3, h4 {
   z-index: 0;
 }
 
+/* Wallpaper Engine WebGL 场景层；默认隐藏，加载完成后由脚本启用 */
+.rhine-hero-wallpaper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.rhine-hero-wallpaper.is-loading {
+  display: block;
+}
+
+.rhine-hero-wallpaper.is-ready {
+  display: block;
+  opacity: 1;
+}
+
+.rhine-hero-wallpaper canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.rhine-hero.is-wallpaper-ready .rhine-hero-video {
+  opacity: 0;
+}
+
+.rhine-hero.is-wallpaper-ready #tsparticles,
+.rhine-hero.is-reduced-motion #tsparticles {
+  visibility: hidden;
+}
+
+.rhine-hero.is-reduced-motion .rhine-hero-video,
+.rhine-hero.is-video-unavailable .rhine-hero-video {
+  display: none;
+}
+
+.rhine-hero.is-reduced-motion .rhine-hero-fallback,
+.rhine-hero.is-video-unavailable:not(.is-wallpaper-ready) .rhine-hero-fallback {
+  z-index: 0;
+  background: url("/img/hero-poster.jpg") center / cover no-repeat,
+    linear-gradient(135deg, #0A1421, #050B12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rhine-hero .rhine-hero-video,
+  .rhine-hero .rhine-hero-wallpaper {
+    display: none;
+  }
+
+  .rhine-hero #tsparticles {
+    visibility: hidden;
+  }
+
+  .rhine-hero .rhine-hero-fallback {
+    z-index: 0;
+    background: url("/img/hero-poster.jpg") center / cover no-repeat,
+      linear-gradient(135deg, #0A1421, #050B12);
+  }
+}
+
+.rhine-hero.is-wallpaper-fallback .rhine-hero-wallpaper {
+  display: none;
+}
+
 /* 图片背景层（用 gif/jpg 时）*/
 .rhine-hero-bg {
   position: absolute;

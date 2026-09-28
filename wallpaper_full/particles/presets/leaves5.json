@@ -1,0 +1,131 @@
+{
+	"animationmode" : "randomframe",
+	"children" : [],
+	"controlpoint" : 
+	[
+		{
+			"angles" : null,
+			"id" : 0
+		},
+		{
+			"angles" : null,
+			"id" : 1
+		},
+		{
+			"angles" : null,
+			"id" : 2
+		},
+		{
+			"angles" : null,
+			"id" : 3
+		},
+		{
+			"angles" : null,
+			"id" : 4
+		},
+		{
+			"angles" : null,
+			"id" : 5
+		},
+		{
+			"angles" : null,
+			"id" : 6
+		},
+		{
+			"angles" : null,
+			"id" : 7
+		}
+	],
+	"emitter" : 
+	[
+		{
+			"directions" : "1 0.1 1",
+			"distancemax" : 750,
+			"distancemin" : 0,
+			"id" : 10,
+			"name" : "sphererandom",
+			"origin" : "350 750 0",
+			"rate" : 20
+		}
+	],
+	"flags" : 4,
+	"initializer" : 
+	[
+		{
+			"id" : 2,
+			"max" : 10,
+			"min" : 8,
+			"name" : "lifetimerandom"
+		},
+		{
+			"exponent" : 2,
+			"id" : 3,
+			"max" : 50,
+			"min" : 20,
+			"name" : "sizerandom"
+		},
+		{
+			"id" : 4,
+			"max" : "-50 -15 0",
+			"min" : "-100 -100 0",
+			"name" : "velocityrandom"
+		},
+		{
+			"id" : 5,
+			"max" : "255 192 248",
+			"min" : "255 255 255",
+			"name" : "colorrandom"
+		},
+		{
+			"id" : 6,
+			"name" : "rotationrandom"
+		},
+		{
+			"id" : 7,
+			"name" : "turbulentvelocityrandom",
+			"offset" : 3,
+			"scale" : 0.5,
+			"speedmax" : 100,
+			"speedmin" : 35
+		},
+		{
+			"id" : 8,
+			"max" : "5 5 5",
+			"min" : "-5 -5 -5",
+			"name" : "angularvelocityrandom"
+		},
+		{
+			"id" : 9,
+			"max" : "6.283 6.283 6.283",
+			"name" : "rotationrandom"
+		}
+	],
+	"material" : "materials/presets/leaves5.json",
+	"maxcount" : 200,
+	"operator" : 
+	[
+		{
+			"id" : 11,
+			"name" : "movement"
+		},
+		{
+			"fadeintime" : 0.1,
+			"fadeouttime" : 0.9,
+			"id" : 12,
+			"name" : "alphafade"
+		},
+		{
+			"id" : 13,
+			"name" : "angularmovement"
+		}
+	],
+	"renderer" : 
+	[
+		{
+			"id" : 1,
+			"name" : "sprite"
+		}
+	],
+	"sequencemultiplier" : 3,
+	"starttime" : 3
+}

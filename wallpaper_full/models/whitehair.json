@@ -1,0 +1,5 @@
+{
+	"autosize" : true,
+	"material" : "materials/whitehair.json",
+	"puppet" : "models/whitehair_puppet.mdl"
+}

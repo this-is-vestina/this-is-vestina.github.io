@@ -1,0 +1,24 @@
+{
+	"passes" : 
+	[
+		{
+			"alphawriting" : "default",
+			"blending" : "translucent",
+			"combos" : 
+			{
+				"CUTOUT" : 0,
+				"LIGHTING" : 0,
+				"REFRACT" : 0
+			},
+			"constantshadervalues" : 
+			{
+				"ui_editor_properties_overbright" : 1.15
+			},
+			"cullmode" : "nocull",
+			"depthtest" : "disabled",
+			"depthwrite" : "disabled",
+			"shader" : "genericparticle",
+			"textures" : [ "particle/petal", "particle/petal" ]
+		}
+	]
+}

@@ -1,0 +1,5 @@
+{
+	"autosize" : true,
+	"material" : "materials/hairfrontside.json",
+	"puppet" : "models/hairfrontside_puppet.mdl"
+}

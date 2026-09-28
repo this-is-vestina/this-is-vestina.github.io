@@ -1,0 +1,27 @@
+{
+  "contentrating": "Everyone",
+  "description": "Artwork by @OrzMizu on X\r\n\r\nthis took a while to make so I hope you like it!!",
+  "file": "scene.json",
+  "general": {
+    "properties": {
+      "bgchroma": { "fraction": true, "index": 3, "max": 1, "min": -1, "order": 103, "precision": 2, "step": 0.1, "text": "bg chroma", "type": "slider", "value": 0 },
+      "bgfilteraddsahueontop": { "index": 4, "order": 104, "text": "bg filter (adds a hue on top)", "type": "color", "value": "1 1 1" },
+      "bghue": { "fraction": true, "index": 2, "max": 360, "min": 0, "order": 102, "precision": 2, "step": 0.1, "text": "bg hue", "type": "slider", "value": 0 },
+      "schemecolor": { "index": 0, "order": 100, "text": "ui_browse_properties_scheme_color", "type": "color", "value": "1 0.7058823529411765 0.8588235294117647" },
+      "showflowers": { "index": 6, "order": 106, "text": "show flowers", "type": "bool", "value": true },
+      "showlight": { "index": 0, "order": 100, "text": "Show light", "type": "bool", "value": true },
+      "showpetals1": { "index": 1, "order": 101, "text": "show petals", "type": "bool", "value": true },
+      "veiltransparency": { "fraction": true, "index": 5, "max": 1, "min": 0, "order": 105, "precision": 2, "step": 0.1, "text": "veil transparency", "type": "slider", "value": 1 }
+    }
+  },
+  "preview": "preview.gif",
+  "ratingsex": "none",
+  "ratingviolence": "none",
+  "tags": ["Anime"],
+  "title": "Cyrene - Honkai Star Rail wallpaper",
+  "type": "scene",
+  "version": 3,
+  "visibility": "public",
+  "workshopid": "3759313716",
+  "workshopurl": "steam://url/CommunityFilePage/3759313716"
+}
