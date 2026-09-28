@@ -41,6 +41,7 @@ predict函数会找到和新输入的图像最相似的图像，并输出它的�
 有许多方法，其中最流行的有L1距离：所有像素差绝对值的总和。
 ![L1](01-4.png)
 
+nearest neighbor classifier代码实现：
 ```python
 import numpy as np
 
